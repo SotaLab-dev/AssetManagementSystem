@@ -1,0 +1,36 @@
+# Node
+node_modules
+
+dist
+
+# Visual Studio
+
+.vs
+
+bin
+
+obj
+
+# Rider
+
+.idea
+
+# VSCode
+
+.vscode
+
+# Logs
+
+*.log
+
+# User
+
+*.user
+
+*.suo
+
+# OS
+
+.DS_Store
+
+Thumbs.db
