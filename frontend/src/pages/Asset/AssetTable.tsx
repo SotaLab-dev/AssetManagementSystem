@@ -47,7 +47,10 @@ const AssetTable = () => {
                         </TableRow>
                     ) : (
                         assets.map((asset) => (
-                            <TableRow key={asset.id}>
+                            <TableRow
+                                hover
+                                key={asset.id}
+                            >
                                 <TableCell padding="checkbox">
                                     <Checkbox />
                                 </TableCell>
@@ -65,15 +68,20 @@ const AssetTable = () => {
                                     <StatusChip status={asset.status} />
                                 </TableCell>
 
-                                <TableCell align="center">
+                                <TableCell
+                                    align="center"
+                                    width={120}
+                                >
                                     <IconButton
                                         color="primary"
+                                        aria-label="編集"
                                     >
                                         <EditIcon />
                                     </IconButton>
 
                                     <IconButton
                                         color="error"
+                                        aria-label="削除"
                                     >
                                         <DeleteIcon />
                                     </IconButton>
