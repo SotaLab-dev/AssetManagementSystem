@@ -1,8 +1,15 @@
-export const ROUTES = {
-    LOGIN: "/",
-    DASHBOARD: "/dashboard",
-    USERS: "/users",
-    ASSETS: "/assets",
-    SETTINGS: "/settings",
-    AUDIT_LOGS: "/audit-logs",
+const Routes = {
+    login: "/login",
+
+    dashboard: "/",
+
+    assets: "/assets",
+
+    users: "/users",
+
+    auditLogs: "/audit-logs",
+
+    settings: "/settings",
 } as const;
+
+export default Routes;

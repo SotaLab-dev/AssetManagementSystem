@@ -1,24 +1,49 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import {
+    Navigate,
+    Route,
+    Routes,
+} from "react-router-dom";
 
-import Login from "../pages/Login/Login";
+import MainLayout from "../layouts/MainLayout";
+
 import Dashboard from "../pages/Dashboard/Dashboard";
-import { ROUTES } from "../constants/Routes";
+import Asset from "../pages/Asset/Asset";
+import Login from "../pages/Login/Login";
+
+import RoutePath from "../constants/Routes";
 
 const AppRouter = () => {
     return (
-        <BrowserRouter>
-            <Routes>
+        <Routes>
+            <Route
+                path={RoutePath.login}
+                element={<Login />}
+            />
+
+            <Route
+                element={<MainLayout />}
+            >
                 <Route
-                    path={ROUTES.LOGIN}
-                    element={<Login />}
+                    path={RoutePath.dashboard}
+                    element={<Dashboard />}
                 />
 
                 <Route
-                    path={ROUTES.DASHBOARD}
-                    element={<Dashboard />}
+                    path={RoutePath.assets}
+                    element={<Asset />}
                 />
-            </Routes>
-        </BrowserRouter>
+            </Route>
+
+            <Route
+                path="*"
+                element={
+                    <Navigate
+                        to={RoutePath.dashboard}
+                        replace
+                    />
+                }
+            />
+        </Routes>
     );
 };
 

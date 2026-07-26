@@ -12,7 +12,7 @@ import {
 
 import AppButton from "../../components/ui/AppButton";
 import AppTextField from "../../components/ui/AppTextField";
-import { ROUTES } from "../../constants/Routes";
+import Routes from "../../constants/Routes";
 
 const Login = () => {
     const navigate = useNavigate();
@@ -22,7 +22,7 @@ const Login = () => {
     const [rememberMe, setRememberMe] = useState(false);
 
     const handleLogin = () => {
-        navigate(ROUTES.DASHBOARD);
+        navigate(Routes.dashboard);
     };
 
     return (
