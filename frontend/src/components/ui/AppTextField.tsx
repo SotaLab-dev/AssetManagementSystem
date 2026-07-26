@@ -1,4 +1,5 @@
 import TextField from "@mui/material/TextField";
+import type { TextFieldProps }  from "@mui/material/TextField";
 
 type AppTextFieldProps = {
     // 必須Props
@@ -6,7 +7,7 @@ type AppTextFieldProps = {
     value: string;
     // 見た目に関するProps
     placeholder?: string;
-    type?: string;
+    type?: TextFieldProps["type"];
     // 状態に関するProps
     required?: boolean;
     disabled?: boolean;
