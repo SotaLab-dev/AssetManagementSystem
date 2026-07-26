@@ -12,6 +12,7 @@ type AppButtonProps = {
 
     disabled?: boolean;
     fullWidth?: boolean;
+    startIcon?: ButtonProps["startIcon"];
 };
 
 const AppButton = ({
@@ -22,6 +23,7 @@ const AppButton = ({
     color = "primary",
     disabled = false,
     fullWidth = false,
+    startIcon,
 }: AppButtonProps) => {
     return (
         <Button
@@ -31,6 +33,7 @@ const AppButton = ({
             disabled={disabled}
             fullWidth={fullWidth}
             onClick={onClick}
+            startIcon={startIcon}
         >
             {children}
         </Button>

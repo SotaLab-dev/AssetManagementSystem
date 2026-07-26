@@ -3,12 +3,11 @@ import {
     InputLabel,
     MenuItem,
     Select,
+    type SelectProps,
 } from "@mui/material";
 
-import type { SelectChangeEvent } from "@mui/material/Select";
-
 export type SelectOption = {
-    value: string;
+    value: string | number;
     label: string;
 };
 
@@ -18,7 +17,7 @@ type AppSelectProps = {
 
     options: SelectOption[];
 
-    onChange: (event: SelectChangeEvent) => void;
+    onChange?: SelectProps<string>["onChange"];
 
     required?: boolean;
     disabled?: boolean;
@@ -42,7 +41,7 @@ const AppSelect = ({
                 {label}
             </InputLabel>
 
-            <Select
+            <Select<string>
                 label={label}
                 value={value}
                 onChange={onChange}

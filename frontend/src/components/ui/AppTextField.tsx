@@ -14,7 +14,7 @@ type AppTextFieldProps = {
     error?: boolean;
     helperText?: string;
     // イベント
-    onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onChange?: TextFieldProps["onChange"];
 };
 
 const AppTextField = ({
