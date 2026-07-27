@@ -8,7 +8,9 @@ import MainLayout from "../layouts/MainLayout";
 
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Asset from "../pages/Asset/Asset";
+import AssetCreate from "../pages/Asset/AssetCreate";
 import Login from "../pages/Login/Login";
+
 
 import RoutePath from "../constants/Routes";
 
@@ -31,6 +33,10 @@ const AppRouter = () => {
                 <Route
                     path={RoutePath.assets}
                     element={<Asset />}
+                />
+                <Route
+                    path={RoutePath.assetCreate}
+                    element={<AssetCreate />}
                 />
             </Route>
 

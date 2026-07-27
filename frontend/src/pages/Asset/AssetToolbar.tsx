@@ -1,18 +1,15 @@
-import AddIcon from "@mui/icons-material/Add";
 import {
     Box,
     Typography,
 } from "@mui/material";
 
 import AppButton from "../../components/ui/AppButton";
+import { useNavigate } from "react-router-dom";
 
-type AssetToolbarProps = {
-    onCreate: () => void;
-};
+import RoutePath from "../../constants/Routes";
 
-const AssetToolbar = ({
-    onCreate,
-}: AssetToolbarProps) => {
+const AssetToolbar = () => {
+    const navigate = useNavigate();
     return (
         <Box
             sx={{
@@ -27,8 +24,7 @@ const AssetToolbar = ({
             </Typography>
 
             <AppButton
-                startIcon={<AddIcon />}
-                onClick={onCreate}
+                onClick={() => navigate(RoutePath.assetCreate)}
             >
                 新規登録
             </AppButton>

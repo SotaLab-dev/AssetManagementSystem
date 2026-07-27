@@ -5,6 +5,8 @@ const Routes = {
 
     assets: "/assets",
 
+    assetCreate: "/assets/create",
+
     users: "/users",
 
     auditLogs: "/audit-logs",
