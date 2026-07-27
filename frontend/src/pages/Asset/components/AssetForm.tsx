@@ -2,33 +2,18 @@ import {
     Card,
     CardContent,
     Stack,
-    Typography,
 } from "@mui/material";
 
 import AppButton from "../../../components/ui/AppButton";
 import AppSelect from "../../../components/ui/AppSelect";
 import AppTextField from "../../../components/ui/AppTextField";
-
-const categoryOptions = [
-    { value: "PC", label: "PC" },
-    { value: "モニター", label: "モニター" },
-    { value: "スマートフォン", label: "スマートフォン" },
-];
-
-const statusOptions = [
-    { value: "利用中", label: "利用中" },
-    { value: "貸出中", label: "貸出中" },
-    { value: "故障中", label: "故障中" },
-];
+import { assetCategoryOptions, assetStatusOptions, DEFAULT_ASSET_STATUS } from "../../../constants/Asset";
 
 const AssetForm = () => {
     return (
         <Card>
             <CardContent>
                 <Stack spacing={3}>
-                    <Typography variant="h5">
-                        備品登録
-                    </Typography>
 
                     <AppTextField
                         label="備品名"
@@ -39,13 +24,13 @@ const AssetForm = () => {
                     <AppSelect
                         label="カテゴリ"
                         value=""
-                        options={categoryOptions}
+                        options={assetCategoryOptions}
                     />
 
                     <AppSelect
                         label="状態"
-                        value="利用中"
-                        options={statusOptions}
+                        value={DEFAULT_ASSET_STATUS}
+                        options={assetStatusOptions}
                     />
 
                     <AppTextField
@@ -72,7 +57,7 @@ const AssetForm = () => {
                         sx={{
                             justifyContent: "flex-end"
                         }}
-                        
+
                     >
                         <AppButton
                             variant="contained"

@@ -7,7 +7,7 @@ import {
 } from "@mui/material";
 
 export type SelectOption = {
-    value: string | number;
+    value: string;
     label: string;
 };
 

@@ -16,9 +16,9 @@ import AppSelect from "../../components/ui/AppSelect";
 import AppTextField from "../../components/ui/AppTextField";
 
 import {
-    categoryOptions,
-    statusOptions,
-} from "../../mocks/assetSearch";
+    assetCategorySearchOptions,
+    assetStatusSearchOptions,
+} from "../../constants/Asset";
 
 const AssetSearch = () => {
     const [assetName, setAssetName] = useState("");
@@ -61,7 +61,7 @@ const AssetSearch = () => {
                         <AppSelect
                             label="カテゴリ"
                             value={category}
-                            options={categoryOptions}
+                            options={assetCategorySearchOptions}
                             onChange={(event) => {
                                 setCategory(event.target.value);
                             }}
@@ -72,7 +72,7 @@ const AssetSearch = () => {
                         <AppSelect
                             label="状態"
                             value={status}
-                            options={statusOptions}
+                            options={assetStatusSearchOptions}
                             onChange={(event) => {
                                 setStatus(event.target.value);
                             }}
@@ -85,6 +85,7 @@ const AssetSearch = () => {
                         display: "flex",
                         justifyContent: "flex-end",
                         gap: 2,
+                        flexWrap: "wrap",
                     }}
                 >
                     <AppButton
