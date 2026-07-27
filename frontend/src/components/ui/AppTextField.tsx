@@ -8,9 +8,11 @@ type AppTextFieldProps = {
     // 見た目に関するProps
     placeholder?: string;
     type?: TextFieldProps["type"];
+    multiline?: TextFieldProps["multiline"];
+    rows?: TextFieldProps["rows"];
     // 状態に関するProps
-    required?: boolean;
-    disabled?: boolean;
+    required?: TextFieldProps["required"];
+    disabled?: TextFieldProps["disabled"];
     error?: boolean;
     helperText?: string;
     // イベント
@@ -27,6 +29,8 @@ const AppTextField = ({
     disabled = false,
     error = false,
     helperText,
+    multiline = false,
+    rows
 }: AppTextFieldProps) => {
     return (
         <TextField
@@ -39,6 +43,8 @@ const AppTextField = ({
             disabled={disabled}
             error={error}
             helperText={helperText}
+            multiline={multiline}
+            rows={rows}
         />
     );
 };
