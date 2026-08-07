@@ -1,6 +1,6 @@
-import type { Asset } from "../types/Asset";
+import type { AssetItem } from "../types/Asset";
 
-export const assets: Asset[] = [
+export const assets: AssetItem[] = [
     {
         id: 1,
         assetName: "ノートPC",

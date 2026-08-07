@@ -13,10 +13,14 @@ import {
     TableRow,
 } from "@mui/material";
 
-import { assets } from "../../mocks/assets";
 import StatusChip from "../../components/common/StatusChip";
+import type { AssetItem } from "../../types/Asset";
 
-const AssetTable = () => {
+type AssetTableProps = {
+    assets: AssetItem[];
+};
+
+const AssetTable = ({assets}: AssetTableProps) => {
     return (
         <TableContainer component={Paper}>
             <Table>
