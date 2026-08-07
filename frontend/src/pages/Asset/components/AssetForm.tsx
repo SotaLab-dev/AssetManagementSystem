@@ -8,13 +8,57 @@ import AppButton from "../../../components/ui/AppButton";
 import AppSelect from "../../../components/ui/AppSelect";
 import AppTextField from "../../../components/ui/AppTextField";
 import { assetCategoryOptions, assetStatusOptions, DEFAULT_ASSET_STATUS, MAX_ASSET_NAME_LENGTH, MAX_MANAGEMENT_NO_LENGTH, MAX_REMARKS_LENGTH } from "../../../constants/Asset";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { maxLength, required, validateForm } from "../../../utils/validation";
+import { Messages } from "../../../constants/Messages";
+import { MaxValue } from "../../../constants/MaxValue";
 
 const AssetForm = () => {
     const [assetName, setAssetName] = useState<string>("");
     const [managementNumber, setManagementNumber] = useState<string>("");
+    const [, setAssetCategory] = useState<string>("");
+    const [, setAssetStatus] = useState<string>(DEFAULT_ASSET_STATUS);
     const [purchaseDate, setPurchaseDate] = useState<Date | null>(null);
     const [remarks, setRemarks] = useState<string>("");
+    const [errors, setErrors] = useState<Record<string, string[]>>({});
+
+    const handleSave = () => {
+        const validation = validateForm([
+            {
+                key: "assetName",
+                value: assetName,
+                validators: [
+                    (v) => required(v, Messages.assetName.requiredMessage),
+                    (v) => maxLength(v, MaxValue.assetName.maxValue, Messages.assetName.errorMessage),
+                ],
+            },
+            {
+                key: "managementNumber",
+                value: managementNumber,
+                validators: [
+                    (v) => required(v, Messages.managementNumber.requiredMessage),
+                    (v) => maxLength(v, MaxValue.managementNumber.maxValue, Messages.managementNumber.errorMessage),
+                ],
+            },
+
+            // 項目が増えてもここに追加するだけ
+        ]);
+
+        setErrors(validation);
+
+        if (Object.keys(validation).length > 0) {
+            return; // エラーがあるの で保存しない
+        }
+
+        // 保存処理
+    };
+
+    useEffect(() => {
+        if(Object.keys(errors).length === 0) {
+            return;
+        }
+    },[errors]);
+
     return (
         <Card>
             <CardContent>
@@ -23,7 +67,8 @@ const AssetForm = () => {
                     <AppTextField
                         label="備品名"
                         value={assetName}
-                        required
+                        error={!!errors.assetName}
+                        helperText={errors.assetName}
                         slotProps={{
                             htmlInput: {
                                 maxLength: MAX_ASSET_NAME_LENGTH,
@@ -38,18 +83,25 @@ const AssetForm = () => {
                         label="カテゴリ"
                         value=""
                         options={assetCategoryOptions}
+                        onChange={(event) => {
+                            setAssetCategory(event.target.value);
+                        }}
                     />
 
                     <AppSelect
                         label="状態"
                         value={DEFAULT_ASSET_STATUS}
                         options={assetStatusOptions}
+                        onChange={(event) => {
+                            setAssetStatus(event.target.value);
+                        }}
                     />
 
                     <AppTextField
                         label="管理番号"
                         value={managementNumber}
-                        required
+                        error={!!errors.managementNumber}
+                        helperText={errors.managementNumber}
                         slotProps={{
                             htmlInput: {
                                 maxLength: MAX_MANAGEMENT_NO_LENGTH,
@@ -62,8 +114,8 @@ const AssetForm = () => {
 
                     <AppTextField
                         label="購入日"
-                        value={purchaseDate ? purchaseDate.toISOString().split('T')[0] : "" }
-                        required
+                        type="date"
+                        value={purchaseDate ? purchaseDate.toISOString().split('T')[0] : ""}
                         onChange={(event) => {
                             setPurchaseDate(event.target.value ? new Date(event.target.value) : null);
                         }}
@@ -72,7 +124,6 @@ const AssetForm = () => {
                     <AppTextField
                         label="備考"
                         value={remarks}
-                        required
                         slotProps={{
                             htmlInput: {
                                 maxLength: MAX_REMARKS_LENGTH,
@@ -93,6 +144,7 @@ const AssetForm = () => {
                     >
                         <AppButton
                             variant="contained"
+                            onClick={handleSave}
                         >
                             保存
                         </AppButton>
