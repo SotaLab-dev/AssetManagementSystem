@@ -13,6 +13,7 @@ import Login from "../pages/Login/Login";
 
 
 import RoutePath from "../constants/Routes";
+import AssetLayout from "../components/AssetLayout/AssetLayout";
 
 const AppRouter = () => {
     return (
@@ -30,14 +31,17 @@ const AppRouter = () => {
                     element={<Dashboard />}
                 />
 
-                <Route
-                    path={RoutePath.assets}
-                    element={<Asset />}
-                />
-                <Route
-                    path={RoutePath.assetCreate}
-                    element={<AssetCreate />}
-                />
+                <Route element={<AssetLayout />}>
+                    <Route
+                        path={RoutePath.assets}
+                        element={<Asset />}
+                    />
+
+                    <Route
+                        path={RoutePath.assetCreate}
+                        element={<AssetCreate />}
+                    />
+                </Route>
             </Route>
 
             <Route

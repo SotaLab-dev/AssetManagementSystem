@@ -1,14 +1,17 @@
+import { useOutletContext } from "react-router-dom";
+import type { AssetItem } from "../../types/Asset";
+
 import { Stack } from "@mui/material";
 
 import AssetSearch from "./AssetSearch";
 import AssetTable from "./AssetTable";
 import AssetToolbar from "./AssetToolbar";
-import { assets as initialAssets } from "../../mocks/assets";
-import { useState } from "react";
-import type { AssetItem } from "../../types/Asset";
 
 const Asset = () => {
-    const [assets] = useState<AssetItem[]>(initialAssets);
+    const { assets } = useOutletContext<{
+    assets: AssetItem[];
+    setAssets: React.Dispatch<React.SetStateAction<AssetItem[]>>;
+}>();
     return (
     <Stack spacing={3}>
         <AssetToolbar />
