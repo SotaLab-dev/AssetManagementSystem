@@ -20,9 +20,10 @@ import type { AssetItem } from "../../types/Asset";
 
 type AssetTableProps = {
     assets: AssetItem[];
+    onDelete?: (id: string) => void;
 };
 
-const AssetTable = ({assets}: AssetTableProps) => {
+const AssetTable = ({assets, onDelete}: AssetTableProps) => {
     const navigate = useNavigate();
     return (
         <TableContainer component={Paper}>
@@ -92,6 +93,9 @@ const AssetTable = ({assets}: AssetTableProps) => {
                                     <IconButton
                                         color="error"
                                         aria-label="削除"
+                                        onClick={() => {
+                                            onDelete?.(asset.id);
+                                        }}
                                     >
                                         <DeleteIcon />
                                     </IconButton>
