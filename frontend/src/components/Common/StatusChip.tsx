@@ -1,7 +1,7 @@
 import Chip from "@mui/material/Chip";
 
 type StatusChipProps = {
-    status: "利用中" | "貸出中" | "故障中";
+    status: string;
 };
 
 const StatusChip = ({ status }: StatusChipProps) => {

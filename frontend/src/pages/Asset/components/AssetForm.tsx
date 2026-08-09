@@ -12,12 +12,17 @@ import { useEffect, useState } from "react";
 import { maxLength, required, validateForm } from "../../../utils/validation";
 import { Messages } from "../../../constants/Messages";
 import { MaxValue } from "../../../constants/MaxValue";
+import type { AssetItem } from "../../../types/Asset";
 
-const AssetForm = () => {
+type AssetFormProps = {
+    onSave: (asset: AssetItem) => void;
+};
+
+const AssetForm = ({ onSave }: AssetFormProps) => {
     const [assetName, setAssetName] = useState<string>("");
     const [managementNumber, setManagementNumber] = useState<string>("");
-    const [, setAssetCategory] = useState<string>("");
-    const [, setAssetStatus] = useState<string>(DEFAULT_ASSET_STATUS);
+    const [assetCategory, setAssetCategory] = useState<string>("");
+    const [assetStatus, setAssetStatus] = useState<string>(DEFAULT_ASSET_STATUS);
     const [purchaseDate, setPurchaseDate] = useState<Date | null>(null);
     const [remarks, setRemarks] = useState<string>("");
     const [errors, setErrors] = useState<Record<string, string[]>>({});
@@ -51,13 +56,24 @@ const AssetForm = () => {
         }
 
         // 保存処理
+        const newAsset: AssetItem = {
+            id: crypto.randomUUID(),
+            assetName,
+            category: assetCategory,
+            status: assetStatus,
+            managementNumber,
+            purchaseDate,
+            remarks,
+        };
+
+        onSave(newAsset);
     };
 
     useEffect(() => {
-        if(Object.keys(errors).length === 0) {
+        if (Object.keys(errors).length === 0) {
             return;
         }
-    },[errors]);
+    }, [errors]);
 
     return (
         <Card>
@@ -81,7 +97,7 @@ const AssetForm = () => {
 
                     <AppSelect
                         label="カテゴリ"
-                        value=""
+                        value={assetCategory}
                         options={assetCategoryOptions}
                         onChange={(event) => {
                             setAssetCategory(event.target.value);
@@ -90,7 +106,7 @@ const AssetForm = () => {
 
                     <AppSelect
                         label="状態"
-                        value={DEFAULT_ASSET_STATUS}
+                        value={assetStatus}
                         options={assetStatusOptions}
                         onChange={(event) => {
                             setAssetStatus(event.target.value);

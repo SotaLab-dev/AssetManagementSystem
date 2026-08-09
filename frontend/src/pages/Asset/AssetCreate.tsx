@@ -1,19 +1,29 @@
-import {
-    Stack,
-    Typography,
-} from "@mui/material";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 import AssetForm from "./components/AssetForm";
+import type { AssetItem } from "../../types/Asset";
+
+import RoutePath from "../../constants/Routes";
+
+type AssetLayoutContext = {
+    assets: AssetItem[];
+    setAssets: React.Dispatch<React.SetStateAction<AssetItem[]>>;
+};
 
 const AssetCreate = () => {
-    return (
-        <Stack spacing={3}>
-            <Typography variant="h4">
-                備品登録
-            </Typography>
+    const navigate = useNavigate();
 
-            <AssetForm />
-        </Stack>
+    const { setAssets } =
+        useOutletContext<AssetLayoutContext>();
+
+    const handleSave = (newAsset: AssetItem) => {
+        setAssets((prev) => [...prev, newAsset]);
+
+        navigate(RoutePath.assets);
+    };
+
+    return (
+        <AssetForm onSave={handleSave} />
     );
 };
 
