@@ -7,6 +7,8 @@ const Routes = {
 
     assetCreate: "/assets/create",
 
+    assetEdit: "/asset/edit/:id",
+
     users: "/users",
 
     auditLogs: "/audit-logs",

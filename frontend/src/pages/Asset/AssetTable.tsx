@@ -13,6 +13,8 @@ import {
     TableRow,
 } from "@mui/material";
 
+import { useNavigate } from "react-router-dom";
+
 import StatusChip from "../../components/common/StatusChip";
 import type { AssetItem } from "../../types/Asset";
 
@@ -21,6 +23,7 @@ type AssetTableProps = {
 };
 
 const AssetTable = ({assets}: AssetTableProps) => {
+    const navigate = useNavigate();
     return (
         <TableContainer component={Paper}>
             <Table>
@@ -79,6 +82,9 @@ const AssetTable = ({assets}: AssetTableProps) => {
                                     <IconButton
                                         color="primary"
                                         aria-label="編集"
+                                        onClick={() => {
+                                            navigate(`/asset/edit/${asset.id}`);
+                                        }}
                                     >
                                         <EditIcon />
                                     </IconButton>

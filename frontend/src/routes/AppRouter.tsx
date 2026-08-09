@@ -9,6 +9,7 @@ import MainLayout from "../layouts/MainLayout";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Asset from "../pages/Asset/Asset";
 import AssetCreate from "../pages/Asset/AssetCreate";
+import { AssetEdit } from "../pages/Asset/AssetEdit";
 import Login from "../pages/Login/Login";
 
 
@@ -41,6 +42,12 @@ const AppRouter = () => {
                         path={RoutePath.assetCreate}
                         element={<AssetCreate />}
                     />
+
+                    <Route
+                        path={RoutePath.assetEdit}
+                        element={<AssetEdit />}
+                    />
+
                 </Route>
             </Route>
 

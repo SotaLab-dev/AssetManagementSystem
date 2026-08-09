@@ -15,16 +15,17 @@ import { MaxValue } from "../../../constants/MaxValue";
 import type { AssetItem } from "../../../types/Asset";
 
 type AssetFormProps = {
+    initialAsset?: AssetItem;
     onSave: (asset: AssetItem) => void;
 };
 
-const AssetForm = ({ onSave }: AssetFormProps) => {
-    const [assetName, setAssetName] = useState<string>("");
-    const [managementNumber, setManagementNumber] = useState<string>("");
-    const [assetCategory, setAssetCategory] = useState<string>("");
-    const [assetStatus, setAssetStatus] = useState<string>(DEFAULT_ASSET_STATUS);
-    const [purchaseDate, setPurchaseDate] = useState<Date | null>(null);
-    const [remarks, setRemarks] = useState<string>("");
+const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
+    const [assetName, setAssetName] = useState<string>(initialAsset?.assetName ?? "");
+    const [managementNumber, setManagementNumber] = useState<string>(initialAsset?.managementNumber ?? "");
+    const [assetCategory, setAssetCategory] = useState<string>(initialAsset?.category ?? "");
+    const [assetStatus, setAssetStatus] = useState<string>(initialAsset?.status ?? DEFAULT_ASSET_STATUS);
+    const [purchaseDate, setPurchaseDate] = useState<Date | null>(initialAsset?.purchaseDate ?? null);
+    const [remarks, setRemarks] = useState<string>(initialAsset?.remarks ?? "");
     const [errors, setErrors] = useState<Record<string, string[]>>({});
 
     const handleSave = () => {
@@ -57,7 +58,7 @@ const AssetForm = ({ onSave }: AssetFormProps) => {
 
         // 保存処理
         const newAsset: AssetItem = {
-            id: crypto.randomUUID(),
+            id: initialAsset?.id ?? crypto.randomUUID(),
             assetName,
             category: assetCategory,
             status: assetStatus,
