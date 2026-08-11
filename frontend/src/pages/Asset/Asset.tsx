@@ -12,6 +12,7 @@ import { type AssetLayoutContext } from "../../types/Asset";
 const Asset = () => {
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
+    const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
 
     const {
         assets,
@@ -87,13 +88,42 @@ const Asset = () => {
     };
 
     const handleChangeRowsPerPage = (
-        event : React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+        event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
 
     ) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
-    }
+    };
 
+    const handleSelectAsset = (id: string) => {
+        setSelectedAssetIds((prev) =>
+            prev.includes(id)
+                ? prev.filter((selectedId) => selectedId !== id)
+                : [...prev, id],
+        );
+    };
+
+    const handleSelectAll = () => {
+        const currentPageIds = paginatedAssets.map(
+            (asset) => asset.id,
+        );
+
+        const allSelected = currentPageIds.every((id) =>
+            selectedAssetIds.includes(id),
+        );
+
+        if (allSelected) {
+            setSelectedAssetIds((prev) => 
+            prev.filter(
+                (id) => !currentPageIds.includes(id),
+            ),
+        );
+        return;
+        }
+        setSelectedAssetIds((prev) => [
+            ...new Set([...prev, ...currentPageIds]),
+        ]);
+    };
 
     return (
         <Stack spacing={3}>
@@ -112,6 +142,9 @@ const Asset = () => {
                 onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
+                selectedAssetIds={selectedAssetIds}
+                onSelectAsset={handleSelectAsset}
+                onSelectAll={handleSelectAll}
             />
         </Stack>
     );

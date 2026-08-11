@@ -32,6 +32,9 @@ type AssetTableProps = {
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => void;
     onDelete?: (id: string) => void;
+    selectedAssetIds: string[];
+    onSelectAsset: (id: string) => void;
+    onSelectAll: () => void;
 };
 
 const AssetTable = ({
@@ -41,7 +44,10 @@ const AssetTable = ({
     rowsPerPage,
     onPageChange,
     onRowsPerPageChange,
-    onDelete
+    onDelete,
+    selectedAssetIds,
+    onSelectAsset,
+    onSelectAll,
 }: AssetTableProps) => {
     const navigate = useNavigate();
     return (
@@ -51,7 +57,23 @@ const AssetTable = ({
                     <TableHead>
                         <TableRow>
                             <TableCell padding="checkbox">
-                                <Checkbox />
+                                <Checkbox
+                                    checked={
+                                        assets.length > 0 &&
+                                        assets.every((asset) =>
+                                            selectedAssetIds.includes(asset.id),
+                                        )
+                                    }
+                                    indeterminate={
+                                        assets.some((asset) =>
+                                            selectedAssetIds.includes(asset.id),
+                                        ) &&
+                                        !assets.every((asset) =>
+                                            selectedAssetIds.includes(asset.id),
+                                        )
+                                    }
+                                    onChange={onSelectAll}
+                                />
                             </TableCell>
                             <TableCell>ID</TableCell>
                             <TableCell>備品名</TableCell>
@@ -80,7 +102,10 @@ const AssetTable = ({
                                     key={asset.id}
                                 >
                                     <TableCell padding="checkbox">
-                                        <Checkbox />
+                                        <Checkbox
+                                            checked={selectedAssetIds.includes(asset.id)}
+                                            onChange={() => onSelectAsset(asset.id)}
+                                        />
                                     </TableCell>
                                     <TableCell>{asset.id}</TableCell>
 
