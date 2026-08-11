@@ -1,14 +1,10 @@
 import { useNavigate, useOutletContext } from "react-router-dom";
 
 import AssetForm from "./components/AssetForm";
-import type { AssetItem } from "../../types/Asset";
+import type { AssetItem, AssetLayoutContext } from "../../types/Asset";
 
 import RoutePath from "../../constants/Routes";
 
-type AssetLayoutContext = {
-    assets: AssetItem[];
-    setAssets: React.Dispatch<React.SetStateAction<AssetItem[]>>;
-};
 
 const AssetCreate = () => {
     const navigate = useNavigate();

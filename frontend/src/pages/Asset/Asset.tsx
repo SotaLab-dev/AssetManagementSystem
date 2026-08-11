@@ -1,25 +1,29 @@
 import { useOutletContext } from "react-router-dom";
-import type { AssetItem } from "../../types/Asset";
+import type { AssetSearchCondition } from "../../types/Asset";
 
 import { Stack } from "@mui/material";
 
 import AssetSearch from "./AssetSearch";
 import AssetTable from "./AssetTable";
 import AssetToolbar from "./AssetToolbar";
-
-type AssetLayoutContext = {
-    assets: AssetItem[];
-    setAssets: React.Dispatch<React.SetStateAction<AssetItem[]>>;
-};
+import { type AssetLayoutContext } from "../../types/Asset";
 
 const Asset = () => {
-    const { assets, setAssets } = useOutletContext<AssetLayoutContext>();
+    const {
+        assets,
+        setAssets,
+        searchCondition,
+        setSearchCondition,
+        appliedSearchCondition,
+        setAppliedSearchCondition,
+    } = useOutletContext<AssetLayoutContext>();
+
 
     const handleDelete = (id: string) => {
         const confirmed = window.confirm(
             "この備品を本当に削除しますか？"
         );
-        if(!confirmed){
+        if (!confirmed) {
             return;
         }
 
@@ -27,15 +31,56 @@ const Asset = () => {
         );
     };
 
+    const handleSearch = () => {
+        setAppliedSearchCondition(searchCondition);
+
+    };
+
+    const handleReset = () => {
+        const emptyCondition: AssetSearchCondition = {
+            assetName: "",
+            category: "",
+            status: "",
+        };
+        setSearchCondition(emptyCondition);
+        setAppliedSearchCondition(emptyCondition);
+    }
+
+    const filteredAssets = assets.filter((asset) => {
+        const matchesAssetName =
+            appliedSearchCondition.assetName === "" ||
+            asset.assetName
+                .toLowerCase()
+                .includes(
+                    appliedSearchCondition.assetName.toLowerCase()
+                );
+        const matchesCategory =
+            appliedSearchCondition.category === "" ||
+            asset.category === appliedSearchCondition.category;
+
+        const matchesStatus =
+            appliedSearchCondition.status === "" ||
+            asset.status === appliedSearchCondition.status;
+
+        return (
+            matchesAssetName &&
+            matchesCategory &&
+            matchesStatus
+        )
+    })
+
     return (
         <Stack spacing={3}>
             <AssetToolbar />
 
-            <AssetSearch />
+            <AssetSearch
+                onSearch={handleSearch}
+                onReset={handleReset}
+            />
 
             <AssetTable
-                assets={assets}
-                onDelete={handleDelete} 
+                assets={filteredAssets}
+                onDelete={handleDelete}
             />
         </Stack>
     );

@@ -2,15 +2,8 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import AssetForm from "./components/AssetForm";
 import RoutePath from "../../constants/Routes";
-import type { AssetItem } from "../../types/Asset";
+import type { AssetItem, AssetLayoutContext } from "../../types/Asset";
 import { useOutletContext } from "react-router-dom";
-
-type AssetLayoutContext = {
-    assets: AssetItem[];
-    setAssets: React.Dispatch<
-        React.SetStateAction<AssetItem[]>
-    >;
-};
 
 export const AssetEdit = () => {
     const { id } = useParams();

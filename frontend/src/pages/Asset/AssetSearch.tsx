@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useOutletContext } from "react-router-dom";
+
 
 import RefreshIcon from "@mui/icons-material/Refresh";
 import SearchIcon from "@mui/icons-material/Search";
@@ -19,25 +20,19 @@ import {
     assetCategorySearchOptions,
     assetStatusSearchOptions,
 } from "../../constants/Asset";
+import { type AssetLayoutContext } from "../../types/Asset";
 
-const AssetSearch = () => {
-    const [assetName, setAssetName] = useState("");
-    const [category, setCategory] = useState("");
-    const [status, setStatus] = useState("");
+type AssetSearchProps = {
+    onSearch: () => void;
+    onReset: () => void;
+};
 
-    const handleSearch = () => {
-        console.log({
-            assetName,
-            category,
-            status,
-        });
-    };
+const AssetSearch = ({ onSearch, onReset }: AssetSearchProps) => {
+    const {
+        searchCondition,
+        setSearchCondition,
+    } = useOutletContext<AssetLayoutContext>();
 
-    const handleReset = () => {
-        setAssetName("");
-        setCategory("");
-        setStatus("");
-    };
 
     return (
         <Paper sx={{ p: 3 }}>
@@ -50,9 +45,12 @@ const AssetSearch = () => {
                     <Grid size={{ xs: 12, md: 4 }}>
                         <AppTextField
                             label="備品名"
-                            value={assetName}
+                            value={searchCondition.assetName}
                             onChange={(event) => {
-                                setAssetName(event.target.value);
+                                setSearchCondition((prev) => ({
+                                    ...prev,
+                                    assetName: event.target.value
+                                }));
                             }}
                         />
                     </Grid>
@@ -60,10 +58,13 @@ const AssetSearch = () => {
                     <Grid size={{ xs: 12, md: 4 }}>
                         <AppSelect
                             label="カテゴリ"
-                            value={category}
+                            value={searchCondition.category}
                             options={assetCategorySearchOptions}
                             onChange={(event) => {
-                                setCategory(event.target.value);
+                                setSearchCondition((prev) => ({
+                                    ...prev,
+                                    category: event.target.value
+                                }));
                             }}
                         />
                     </Grid>
@@ -71,10 +72,13 @@ const AssetSearch = () => {
                     <Grid size={{ xs: 12, md: 4 }}>
                         <AppSelect
                             label="状態"
-                            value={status}
+                            value={searchCondition.status}
                             options={assetStatusSearchOptions}
                             onChange={(event) => {
-                                setStatus(event.target.value);
+                                setSearchCondition((prev) => ({
+                                    ...prev,
+                                    status: event.target.value
+                                }));
                             }}
                         />
                     </Grid>
@@ -90,7 +94,7 @@ const AssetSearch = () => {
                 >
                     <AppButton
                         startIcon={<SearchIcon />}
-                        onClick={handleSearch}
+                        onClick={onSearch}
                     >
                         検索
                     </AppButton>
@@ -98,7 +102,7 @@ const AssetSearch = () => {
                     <AppButton
                         variant="outlined"
                         startIcon={<RefreshIcon />}
-                        onClick={handleReset}
+                        onClick={onReset}
                     >
                         リセット
                     </AppButton>

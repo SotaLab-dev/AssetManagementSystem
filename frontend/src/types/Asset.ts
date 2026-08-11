@@ -7,3 +7,29 @@ export type AssetItem = {
     purchaseDate: Date | null;
     remarks: string;
 };
+
+export type AssetSearchCondition = {
+    assetName: string;
+    category: string;
+    status: string;
+}
+
+export type AssetLayoutContext = {
+    assets: AssetItem[];
+
+    setAssets: React.Dispatch<
+        React.SetStateAction<AssetItem[]>
+    >;
+
+    searchCondition: AssetSearchCondition;
+
+    setSearchCondition: React.Dispatch<
+        React.SetStateAction<AssetSearchCondition>
+    >;
+
+    appliedSearchCondition: AssetSearchCondition;
+
+    setAppliedSearchCondition: React.Dispatch<
+        React.SetStateAction<AssetSearchCondition>
+    >;
+};
