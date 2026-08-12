@@ -2,18 +2,22 @@ import { useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import type { AssetSearchCondition } from "../../types/Asset";
 
-import { Stack } from "@mui/material";
+import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Stack } from "@mui/material";
 
 import AssetSearch from "./AssetSearch";
 import AssetTable from "./AssetTable";
 import AssetToolbar from "./AssetToolbar";
 import { type AssetLayoutContext } from "../../types/Asset";
 import AppButton from "../../components/ui/AppButton";
+import { assetStatusOptions, DEFAULT_ASSET_STATUS } from "../../constants/Asset";
+import AppSelect from "../../components/ui/AppSelect";
 
 const Asset = () => {
     const [page, setPage] = useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = useState<number>(10);
     const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
+    const [isStatusDialogOpen, setIsStatusDialogOpen] = useState<boolean>(false);
+    const [bulkStatus, setBulkStatus] = useState(DEFAULT_ASSET_STATUS);
 
     const {
         assets,
@@ -23,7 +27,6 @@ const Asset = () => {
         appliedSearchCondition,
         setAppliedSearchCondition,
     } = useOutletContext<AssetLayoutContext>();
-
 
     const handleDelete = (id: string) => {
         const confirmed = window.confirm(
@@ -147,6 +150,34 @@ const Asset = () => {
             setSelectedAssetIds([]);
         };
 
+        const handleOpenStatusDialog = () => {
+            if (selectedAssetIds.length === 0) {
+                return;
+            }
+
+            setBulkStatus(DEFAULT_ASSET_STATUS);
+            setIsStatusDialogOpen(true);
+        }
+
+        const handleCloseStatusDialog = () => {
+            setIsStatusDialogOpen(false);
+        }
+
+        const handleBulkStatusChange = () => {
+            setAssets((prev) =>
+                prev.map((asset) =>
+                    selectedAssetIds.includes(asset.id)
+                        ? {
+                            ...asset,
+                            status: bulkStatus,
+                        }
+                        : asset,
+                ),
+            );
+            setSelectedAssetIds([]);
+            setIsStatusDialogOpen(false);
+        };
+
         return (
             <Stack spacing={3}>
                 <AssetToolbar />
@@ -162,15 +193,30 @@ const Asset = () => {
                         justifyContent: "flex-end",
                     }}
                 >
-
-                    <AppButton
-                        variant="outlined"
-                        color="error"
-                        disabled={selectedAssetIds.length === 0}
-                        onClick={handleBulkDelete}
+                    <Box
+                        sx={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                            gap: 1,
+                            flexWrap: "wrap",
+                        }}
                     >
-                        選択した備品を削除
-                    </AppButton>
+                        <AppButton
+                            variant="outlined"
+                            disabled={selectedAssetIds.length === 0}
+                            onClick={handleOpenStatusDialog}
+                        >
+                            状態を変更
+                        </AppButton>
+                        <AppButton
+                            variant="outlined"
+                            color="error"
+                            disabled={selectedAssetIds.length === 0}
+                            onClick={handleBulkDelete}
+                        >
+                            選択した備品を削除
+                        </AppButton>
+                    </Box>
                 </Stack>
 
                 <AssetTable
@@ -185,8 +231,45 @@ const Asset = () => {
                     onSelectAsset={handleSelectAsset}
                     onSelectAll={handleSelectAll}
                 />
+
+                <Dialog
+                    open={isStatusDialogOpen}
+                    onClose={handleCloseStatusDialog}
+                >
+                    <DialogTitle>
+                        状態を変更
+                    </DialogTitle>
+
+                    <DialogContent>
+                        <AppSelect
+                            label="状態"
+                            value={bulkStatus}
+                            options={assetStatusOptions}
+                            onChange={(event) => {
+                                setBulkStatus(event?.target.value);
+                            }}
+                        />
+                    </DialogContent>
+
+                    <DialogActions>
+                        <AppButton
+                            variant="outlined"
+                            onClick={handleCloseStatusDialog}
+
+                        >
+                            キャンセル
+                        </AppButton>
+
+                        <AppButton
+                            variant="outlined"
+                            onClick={handleBulkStatusChange}
+                        >
+                            変更
+                        </AppButton>
+                    </DialogActions>
+                </Dialog>
             </Stack>
         );
     };
 };
-    export default Asset;
+export default Asset;
