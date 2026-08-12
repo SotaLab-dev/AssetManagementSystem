@@ -8,6 +8,7 @@ import AssetSearch from "./AssetSearch";
 import AssetTable from "./AssetTable";
 import AssetToolbar from "./AssetToolbar";
 import { type AssetLayoutContext } from "../../types/Asset";
+import AppButton from "../../components/ui/AppButton";
 
 const Asset = () => {
     const [page, setPage] = useState<number>(0);
@@ -113,41 +114,79 @@ const Asset = () => {
         );
 
         if (allSelected) {
-            setSelectedAssetIds((prev) => 
-            prev.filter(
-                (id) => !currentPageIds.includes(id),
-            ),
-        );
-        return;
+            setSelectedAssetIds((prev) =>
+                prev.filter(
+                    (id) => !currentPageIds.includes(id),
+                ),
+            );
+            return;
         }
         setSelectedAssetIds((prev) => [
             ...new Set([...prev, ...currentPageIds]),
         ]);
+    }; {
+
+        const handleBulkDelete = () => {
+            if (selectedAssetIds.length === 0) {
+                return;
+            }
+            const confirmed = window.confirm(
+                `${selectedAssetIds.length}件の備品を削除しますか？`,
+            );
+
+            if (!confirmed) {
+                return;
+            }
+
+            setAssets((prev) =>
+                prev.filter(
+                    (asset) => !selectedAssetIds.includes(asset.id),
+                ),
+            );
+
+            setSelectedAssetIds([]);
+        };
+
+        return (
+            <Stack spacing={3}>
+                <AssetToolbar />
+
+                <AssetSearch
+                    onSearch={handleSearch}
+                    onReset={handleReset}
+                />
+
+                <Stack
+                    direction="row"
+                    sx={{
+                        justifyContent: "flex-end",
+                    }}
+                >
+
+                    <AppButton
+                        variant="outlined"
+                        color="error"
+                        disabled={selectedAssetIds.length === 0}
+                        onClick={handleBulkDelete}
+                    >
+                        選択した備品を削除
+                    </AppButton>
+                </Stack>
+
+                <AssetTable
+                    assets={paginatedAssets}
+                    onDelete={handleDelete}
+                    count={filteredAssets.length}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    selectedAssetIds={selectedAssetIds}
+                    onSelectAsset={handleSelectAsset}
+                    onSelectAll={handleSelectAll}
+                />
+            </Stack>
+        );
     };
-
-    return (
-        <Stack spacing={3}>
-            <AssetToolbar />
-
-            <AssetSearch
-                onSearch={handleSearch}
-                onReset={handleReset}
-            />
-
-            <AssetTable
-                assets={paginatedAssets}
-                onDelete={handleDelete}
-                count={filteredAssets.length}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                selectedAssetIds={selectedAssetIds}
-                onSelectAsset={handleSelectAsset}
-                onSelectAll={handleSelectAll}
-            />
-        </Stack>
-    );
 };
-
-export default Asset;
+    export default Asset;
