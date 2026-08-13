@@ -3,7 +3,7 @@ export const MaxValue = {
         maxValue: 50,
     },
     managementNumber: {
-        maxValue: 10,
+        maxValue: 30,
     },
     remarks: {
         maxValue: 200,

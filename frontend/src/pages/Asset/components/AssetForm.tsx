@@ -8,7 +8,7 @@ import AppButton from "../../../components/ui/AppButton";
 import AppSelect from "../../../components/ui/AppSelect";
 import AppTextField from "../../../components/ui/AppTextField";
 import { assetCategoryOptions, assetStatusOptions, DEFAULT_ASSET_STATUS, MAX_ASSET_NAME_LENGTH, MAX_MANAGEMENT_NO_LENGTH, MAX_REMARKS_LENGTH } from "../../../constants/Asset";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { maxLength, required, validateForm } from "../../../utils/validation";
 import { Messages } from "../../../constants/Messages";
 import { MaxValue } from "../../../constants/MaxValue";
@@ -18,6 +18,7 @@ type AssetFormProps = {
     initialAsset?: AssetItem;
     onSave: (asset: AssetItem) => void;
 };
+
 
 const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
     const [assetName, setAssetName] = useState<string>(initialAsset?.assetName ?? "");
@@ -35,15 +36,22 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
                 value: assetName,
                 validators: [
                     (v) => required(v, Messages.assetName.requiredMessage),
-                    (v) => maxLength(v, MaxValue.assetName.maxValue, Messages.assetName.errorMessage),
+                    (v) => maxLength(v, MaxValue.assetName.maxValue, Messages.assetName.maxLengthMessage),
                 ],
+            },
+            {
+              key: "assetCategory",
+              value:  assetCategory ,
+              validators: [
+                (v) => required(v, Messages.assetCategory.requiredMessage),
+              ],
             },
             {
                 key: "managementNumber",
                 value: managementNumber,
                 validators: [
                     (v) => required(v, Messages.managementNumber.requiredMessage),
-                    (v) => maxLength(v, MaxValue.managementNumber.maxValue, Messages.managementNumber.errorMessage),
+                    (v) => maxLength(v, MaxValue.managementNumber.maxValue, Messages.managementNumber.maxLengthMessage),
                 ],
             },
 
@@ -70,12 +78,6 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
         onSave(newAsset);
     };
 
-    useEffect(() => {
-        if (Object.keys(errors).length === 0) {
-            return;
-        }
-    }, [errors]);
-
     return (
         <Card>
             <CardContent>
@@ -84,6 +86,7 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
                     <AppTextField
                         label="備品名"
                         value={assetName}
+                        required
                         error={!!errors.assetName}
                         helperText={errors.assetName}
                         slotProps={{
@@ -99,6 +102,8 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
                     <AppSelect
                         label="カテゴリ"
                         value={assetCategory}
+                        error={!!errors.assetCategory}
+                        helperText={errors.assetCategory}
                         options={assetCategoryOptions}
                         onChange={(event) => {
                             setAssetCategory(event.target.value);

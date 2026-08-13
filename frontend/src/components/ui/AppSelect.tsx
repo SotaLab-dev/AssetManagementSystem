@@ -1,5 +1,6 @@
 import {
     FormControl,
+    FormHelperText,
     InputLabel,
     MenuItem,
     Select,
@@ -17,6 +18,9 @@ type AppSelectProps = {
 
     options: SelectOption[];
 
+    error?: boolean;
+    helperText?: string | string[];
+
     onChange?: SelectProps<string>["onChange"];
 
     required?: boolean;
@@ -27,6 +31,8 @@ const AppSelect = ({
     label,
     value,
     options,
+    error = false,
+    helperText,
     onChange,
     required = false,
     disabled = false,
@@ -34,6 +40,7 @@ const AppSelect = ({
     return (
         <FormControl
             fullWidth
+            error={error}
             required={required}
             disabled={disabled}
         >
@@ -55,6 +62,11 @@ const AppSelect = ({
                     </MenuItem>
                 ))}
             </Select>
+            {helperText && (
+                <FormHelperText>
+                    {helperText}
+                </FormHelperText>
+            )}
         </FormControl>
     );
 };
