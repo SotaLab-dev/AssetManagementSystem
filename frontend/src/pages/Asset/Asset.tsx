@@ -50,10 +50,9 @@ const Asset = () => {
             <Stack
                 direction="row"
                 sx={{
-                    display: "flex",
                     justifyContent: "flex-end",
                     gap: 1,
-                    flexwWrap: "wrap"
+                    flexWrap: "wrap"
                 }}
             >
                 <AppButton
@@ -89,12 +88,21 @@ const Asset = () => {
             <Dialog
                 open={isStatusDialogOpen}
                 onClose={handleCloseStatusDialog}
+                fullWidth
+                maxWidth="sm"
             >
                 <DialogTitle>
                     状態を変更
                 </DialogTitle>
 
-                <DialogContent>
+                <DialogContent
+                    sx={{
+                        display: "flex",
+                        minHeight: 140,
+                        pt: 2,
+                        alignItems: "center",
+                    }}
+                >
                     <AppSelect
                         label="状態"
                         value={bulkStatus}
@@ -109,7 +117,6 @@ const Asset = () => {
                     <AppButton
                         variant="outlined"
                         onClick={handleCloseStatusDialog}
-
                     >
                         キャンセル
                     </AppButton>
