@@ -18,8 +18,14 @@ const AssetCreate = () => {
         navigate(RoutePath.assets);
     };
 
+    const handleCancel = () => {
+        navigate(RoutePath.assets);
+    };
+
     return (
-        <AssetForm onSave={handleSave} />
+        <AssetForm
+            onSave={handleSave}
+            onCancel={handleCancel} />
     );
 };
 

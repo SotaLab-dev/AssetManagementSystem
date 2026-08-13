@@ -17,10 +17,11 @@ import type { AssetItem } from "../../../types/Asset";
 type AssetFormProps = {
     initialAsset?: AssetItem;
     onSave: (asset: AssetItem) => void;
+    onCancel: () => void;
 };
 
 
-const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
+const AssetForm = ({ initialAsset, onSave, onCancel }: AssetFormProps) => {
     const [assetName, setAssetName] = useState<string>(initialAsset?.assetName ?? "");
     const [managementNumber, setManagementNumber] = useState<string>(initialAsset?.managementNumber ?? "");
     const [assetCategory, setAssetCategory] = useState<string>(initialAsset?.category ?? "");
@@ -185,6 +186,7 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
 
                         <AppButton
                             variant="outlined"
+                            onClick={onCancel}
                         >
                             キャンセル
                         </AppButton>

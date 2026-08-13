@@ -32,10 +32,15 @@ export const AssetEdit = () => {
         navigate(RoutePath.assets);
     };
 
+    const handleCancel = () => {
+        navigate(RoutePath.assets);
+    };
+
     return (
         <AssetForm
             initialAsset={asset}
             onSave={handleSave}
+            onCancel={handleCancel}
         />
     );
 };
