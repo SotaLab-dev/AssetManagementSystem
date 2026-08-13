@@ -12,6 +12,7 @@ import {
     TableHead,
     TableRow,
     TablePagination,
+    Box,
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -51,9 +52,23 @@ const AssetTable = ({
 }: AssetTableProps) => {
     const navigate = useNavigate();
     return (
-        <>
-            <TableContainer component={Paper}>
-                <Table>
+        <Box
+            sx={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                minHeight: 0,
+            }}
+        >
+            <TableContainer
+                component={Paper}
+                sx={{
+                    flex: 1,
+                    minHeight: 0,
+                    overflow: "auto",
+                }}
+            >
+                <Table stickyHeader>
                     <TableHead>
                         <TableRow>
                             <TableCell padding="checkbox">
@@ -75,7 +90,10 @@ const AssetTable = ({
                                     onChange={onSelectAll}
                                 />
                             </TableCell>
-                            <TableCell>ID</TableCell>
+                            <TableCell
+                                sx={{
+                                    backgroundColor: "background.paper",
+                                }}>ID</TableCell>
                             <TableCell>備品名</TableCell>
                             <TableCell>カテゴリ</TableCell>
                             <TableCell>状態</TableCell>
@@ -159,8 +177,11 @@ const AssetTable = ({
                 onPageChange={onPageChange}
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={onRowsPerPageChange}
+                sx={{
+                    flexShrink: 0,
+                }}
             />
-        </>
+        </Box>
     );
 };
 

@@ -1,4 +1,5 @@
 import {
+    Box,
     Dialog,
     DialogActions,
     DialogContent,
@@ -39,7 +40,13 @@ const Asset = () => {
     } = useAssetList();
 
     return (
-        <Stack spacing={3}>
+        <Stack
+            spacing={3}
+            sx={{
+                height: "100%",
+                minHeight: 0,
+            }}
+        >
             <AssetToolbar />
 
             <AssetSearch
@@ -72,18 +79,26 @@ const Asset = () => {
                 </AppButton>
             </Stack>
 
-            <AssetTable
-                assets={paginatedAssets}
-                onDelete={handleDelete}
-                count={filteredAssets.length}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                selectedAssetIds={selectedAssetIds}
-                onSelectAsset={handleSelectAsset}
-                onSelectAll={handleSelectAll}
-            />
+            <Box
+                sx={{
+                    flex: 1,
+                    minHeight: 0,
+                    minWidth: 0
+                }}
+            >
+                <AssetTable
+                    assets={paginatedAssets}
+                    onDelete={handleDelete}
+                    count={filteredAssets.length}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    selectedAssetIds={selectedAssetIds}
+                    onSelectAsset={handleSelectAsset}
+                    onSelectAll={handleSelectAll}
+                />
+            </Box>
 
             <Dialog
                 open={isStatusDialogOpen}
