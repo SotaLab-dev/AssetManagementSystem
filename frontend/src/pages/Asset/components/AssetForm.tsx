@@ -7,7 +7,7 @@ import {
 import AppButton from "../../../components/ui/AppButton";
 import AppSelect from "../../../components/ui/AppSelect";
 import AppTextField from "../../../components/ui/AppTextField";
-import { assetCategoryOptions, assetStatusOptions, DEFAULT_ASSET_STATUS, MAX_ASSET_NAME_LENGTH, MAX_MANAGEMENT_NO_LENGTH, MAX_REMARKS_LENGTH } from "../../../constants/Asset";
+import { assetCategoryOptions, assetStatusOptions, DEFAULT_ASSET_STATUS } from "../../../constants/Asset";
 import { useState } from "react";
 import { maxLength, required, validateForm } from "../../../utils/validation";
 import { Messages } from "../../../constants/Messages";
@@ -40,11 +40,11 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
                 ],
             },
             {
-              key: "assetCategory",
-              value:  assetCategory ,
-              validators: [
-                (v) => required(v, Messages.assetCategory.requiredMessage),
-              ],
+                key: "assetCategory",
+                value: assetCategory,
+                validators: [
+                    (v) => required(v, Messages.assetCategory.requiredMessage),
+                ],
             },
             {
                 key: "managementNumber",
@@ -54,6 +54,13 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
                     (v) => maxLength(v, MaxValue.managementNumber.maxValue, Messages.managementNumber.maxLengthMessage),
                 ],
             },
+            {
+                key: "remarks",
+                value: "remarks",
+                validators: [
+                    (v) => maxLength(v, MaxValue.remarks.maxValue, Messages.remarks.maxLengthMessage)
+                ]
+            }
 
             // 項目が増えてもここに追加するだけ
         ]);
@@ -86,12 +93,11 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
                     <AppTextField
                         label="備品名"
                         value={assetName}
-                        required
                         error={!!errors.assetName}
                         helperText={errors.assetName}
                         slotProps={{
                             htmlInput: {
-                                maxLength: MAX_ASSET_NAME_LENGTH,
+                                maxLength: MaxValue.assetName.maxValue,
                             },
                         }}
                         onChange={(event) => {
@@ -126,7 +132,7 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
                         helperText={errors.managementNumber}
                         slotProps={{
                             htmlInput: {
-                                maxLength: MAX_MANAGEMENT_NO_LENGTH,
+                                maxLength: MaxValue.managementNumber.maxValue,
                             },
                         }}
                         onChange={(event) => {
@@ -140,9 +146,9 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
                         value={purchaseDate ?? ""}
                         onChange={(event) => {
                             setPurchaseDate(
-                                event.target.value === "" 
-                                ? null
-                                : event.target.value
+                                event.target.value === ""
+                                    ? null
+                                    : event.target.value
                             );
                         }}
                     />
@@ -150,9 +156,11 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
                     <AppTextField
                         label="備考"
                         value={remarks}
+                        error={!!errors.remarks}
+                        helperText={errors.remarks}
                         slotProps={{
                             htmlInput: {
-                                maxLength: MAX_REMARKS_LENGTH,
+                                maxLength: MaxValue.remarks.maxValue,
                             },
                         }}
                         onChange={(event) => {

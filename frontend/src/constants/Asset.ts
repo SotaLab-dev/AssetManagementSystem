@@ -46,10 +46,4 @@ export const assetStatusSearchOptions: SelectOption[] = [
     ...assetStatusOptions,
 ];
 
-export const MAX_ASSET_NAME_LENGTH = 100;
-
-export const MAX_MANAGEMENT_NO_LENGTH = 50;
-
-export const MAX_REMARKS_LENGTH = 500;
-
 export const DEFAULT_ASSET_STATUS = assetStatusOptions[0].value;
