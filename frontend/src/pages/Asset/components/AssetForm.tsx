@@ -25,7 +25,7 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
     const [managementNumber, setManagementNumber] = useState<string>(initialAsset?.managementNumber ?? "");
     const [assetCategory, setAssetCategory] = useState<string>(initialAsset?.category ?? "");
     const [assetStatus, setAssetStatus] = useState<string>(initialAsset?.status ?? DEFAULT_ASSET_STATUS);
-    const [purchaseDate, setPurchaseDate] = useState<Date | null>(initialAsset?.purchaseDate ?? null);
+    const [purchaseDate, setPurchaseDate] = useState<string | null>(initialAsset?.purchaseDate ?? null);
     const [remarks, setRemarks] = useState<string>(initialAsset?.remarks ?? "");
     const [errors, setErrors] = useState<Record<string, string[]>>({});
 
@@ -137,9 +137,13 @@ const AssetForm = ({ initialAsset, onSave }: AssetFormProps) => {
                     <AppTextField
                         label="購入日"
                         type="date"
-                        value={purchaseDate ? purchaseDate.toISOString().split('T')[0] : ""}
+                        value={purchaseDate ?? ""}
                         onChange={(event) => {
-                            setPurchaseDate(event.target.value ? new Date(event.target.value) : null);
+                            setPurchaseDate(
+                                event.target.value === "" 
+                                ? null
+                                : event.target.value
+                            );
                         }}
                     />
 

@@ -4,7 +4,7 @@ export type AssetItem = {
     category: string;
     status: string;
     managementNumber: string;
-    purchaseDate: Date | null;
+    purchaseDate: string | null;
     remarks: string;
 };
 
