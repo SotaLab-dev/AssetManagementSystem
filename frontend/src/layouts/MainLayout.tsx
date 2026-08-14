@@ -18,6 +18,7 @@ const MainLayout = () => {
             }}
         >
             <Header
+                sidebarOpen={sidebarOpen}
                 onMenuClick={() => {
                     setSidebarOpen((prev) => !prev);
                 }}
@@ -25,6 +26,9 @@ const MainLayout = () => {
 
             <Sidebar
                 open={sidebarOpen}
+                onMenuClick={() => {
+                    setSidebarOpen((prev) => !prev);
+                }}
             />
             <Box
                 component="main"
