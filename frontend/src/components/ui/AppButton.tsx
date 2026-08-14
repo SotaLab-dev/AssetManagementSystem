@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 
 type AppButtonProps = {
     children: ReactNode;
-    onClick?: () => void;
+    onClick?: ButtonProps["onClick"];
 
     type?: ButtonProps["type"];
     variant?: ButtonProps["variant"];

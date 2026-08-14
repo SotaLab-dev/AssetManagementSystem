@@ -52,6 +52,9 @@ const AppSelect = ({
                 label={label}
                 value={value}
                 onChange={onChange}
+                sx={{
+                    height: 56,
+                }}
             >
                 {options.map((option) => (
                     <MenuItem
