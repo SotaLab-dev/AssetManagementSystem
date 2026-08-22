@@ -7,7 +7,7 @@ export const assets: AssetItem[] = [
         category: "PC",
         status: "利用中",
         managementNumber: "MAN001",
-        purchaseDate: new Date("2023-01-01"),
+        purchaseDate: "2023-01-01",
         remarks: "備品登録用"
     },
     {
@@ -16,7 +16,7 @@ export const assets: AssetItem[] = [
         category: "ディスプレイ",
         status: "貸出中",
         managementNumber: "MAN002",
-        purchaseDate: new Date("2023-02-01"),
+        purchaseDate: "2023-01-01",
         remarks: "備品登録用"
     },
     {
@@ -25,7 +25,7 @@ export const assets: AssetItem[] = [
         category: "周辺機器",
         status: "故障中",
         managementNumber: "MAN003",
-        purchaseDate: new Date("2023-03-01"),
+        purchaseDate: "2023-01-01",
         remarks: "備品登録用"
     },
 ];

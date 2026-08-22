@@ -1,11 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 
-import { assets as initialAssets } from "../../mocks/assets";
 import type { AssetItem, AssetSearchCondition } from "../../types/Asset";
 
 const AssetLayout = () => {
-    const [assets, setAssets] = useState<AssetItem[]>(initialAssets);
+
+    const GetAssets = async () => {
+        try {
+            const res = await fetch("/api/assets");
+            const data : AssetItem[] = await res.json();
+
+            if (!res.ok) {
+                throw new Error("API request failed");
+            }
+            return data;
+        }
+        catch (err) {
+            console.error("API error", err);
+            return [];
+        }
+    }
+
+    const [assets, setAssets] = useState<AssetItem[]>([]);
+
     const [searchCondition, setSearchCondition] = useState<AssetSearchCondition>({
         assetName: "",
         category: "",
@@ -16,6 +33,15 @@ const AssetLayout = () => {
         category: "",
         status: "",
     });
+
+        useEffect(() => {
+        const fetchAssets = async () => {
+            const data = await GetAssets();
+            setAssets(data);
+        }
+        
+        fetchAssets();
+    },[])
 
     return (
         <Outlet
