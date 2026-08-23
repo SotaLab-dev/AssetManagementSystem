@@ -1,3 +1,8 @@
+using AssetManagementSystem.Api.Data;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
+
+
 namespace AssetManagementSystem.Api
 {
     public class Program
@@ -6,41 +11,26 @@ namespace AssetManagementSystem.Api
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //// CORS 設定を追加
-            //builder.Services.AddCors(options =>
-            //{
-            //    options.AddPolicy("AllowFrontend", policy =>
-            //    {
-            //        policy.WithOrigins("http://localhost:5173")
-            //              .AllowAnyHeader()
-            //              .AllowAnyMethod();
-            //    });
-            //});
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-            // Add services to the container.
+            // DbContext の登録
+            builder.Services.AddDbContext<AppDbContext>(options =>
+                options.UseSqlServer(connectionString)
+            );
 
             builder.Services.AddControllers();
-
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
 
-
-
-            //app.UseHttpsRedirection();
-
             app.UseRouting();
-
-            //app.UseCors("AllowFrontend");
-            
             app.UseAuthorization();
 
             app.MapControllers();

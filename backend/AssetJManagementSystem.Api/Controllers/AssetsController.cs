@@ -20,7 +20,7 @@ namespace AssetManagementSystem.Api.Controllers
                   Category = "PC",
                   Status = "利用中",
                   ManagementNumber = "MAN001",
-                  PurchaseDate = "2023-01-01",
+                  PurchaseDate = new DateOnly(2023, 01, 01),
                   Remarks = "備品登録用"
                 }
             };

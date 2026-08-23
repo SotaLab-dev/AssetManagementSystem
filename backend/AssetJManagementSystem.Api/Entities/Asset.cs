@@ -1,6 +1,6 @@
-namespace AssetManagementSystem.Api.Models
+﻿namespace AssetManagementSystem.Api.Entities
 {
-    public class AssetsResponse
+    public class Asset
     {
         public Guid Id { get; set; }
 
