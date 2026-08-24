@@ -1,5 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
+using AssetManagementSystem.Api.Data;
 using AssetManagementSystem.Api.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace AssetManagementSystem.Api.Controllers
 {
@@ -7,25 +9,32 @@ namespace AssetManagementSystem.Api.Controllers
     [Route("api/[controller]")]
     public class AssetsController : ControllerBase
     {
+        private readonly AppDbContext _assetContext;
+
+        public AssetsController(AppDbContext appDbContext)
+        {
+            _assetContext = appDbContext;
+        }
+
         // GET /api/assets
         [HttpGet]
-        public ActionResult<IEnumerable<AssetsResponse>> Get()
+        public async Task<ActionResult<IEnumerable<AssetsResponse>>> GetAssetsAsync()
         {
-            var response = new List<AssetsResponse>
-            {
-                new AssetsResponse
-                {
-                  Id = Guid.NewGuid(),
-                  AssetName = "ノートPC",
-                  Category = "PC",
-                  Status = "利用中",
-                  ManagementNumber = "MAN001",
-                  PurchaseDate = new DateOnly(2023, 01, 01),
-                  Remarks = "備品登録用"
-                }
-            };
+            var assets = await _assetContext.Assets
+                                            .AsNoTracking()
+                                            .Select(a => new AssetsResponse
+                                            {
+                                                Id = a.Id,
+                                                AssetName = a.AssetName,
+                                                Category = a.Category,
+                                                Status = a.Status,
+                                                ManagementNumber = a.ManagementNumber,
+                                                PurchaseDate = a.PurchaseDate,
+                                                Remarks = a.Remarks,
+                                            })
+                                            .ToListAsync();
 
-            return Ok(response);
+            return Ok(assets);
         }
     }
 }
