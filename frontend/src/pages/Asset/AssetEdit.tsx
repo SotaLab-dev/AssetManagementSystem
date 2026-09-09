@@ -4,18 +4,17 @@ import AssetForm from "./components/AssetForm";
 import RoutePath from "../../constants/Routes";
 import type { AssetItem, AssetLayoutContext } from "../../types/Asset";
 import { useOutletContext } from "react-router-dom";
+import { AssetMode } from "../../types/AssetMode";
 
 export const AssetEdit = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-
     const { assets, setAssets } =
         useOutletContext<AssetLayoutContext>();
 
     const asset = assets.find(
         (item) => item.id === id
     );
-
     if (!asset) {
         return null;
     }
@@ -37,11 +36,12 @@ export const AssetEdit = () => {
     };
 
     return (
-        <AssetForm
-            initialAsset={asset}
-            onSave={handleSave}
-            onCancel={handleCancel}
-        />
+            <AssetForm
+                initialAsset={asset}
+                mode={AssetMode.EDIT}
+                onSave={handleSave}
+                onCancel={handleCancel}
+            />
     );
 };
 

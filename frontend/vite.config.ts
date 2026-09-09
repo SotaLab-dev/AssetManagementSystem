@@ -9,7 +9,8 @@ export default defineConfig({
       "/api": {
         target: "http://localhost:5093",
         changeOrigin: true,
-      },
+        secure: false
+        },
     },
   },
 })

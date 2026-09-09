@@ -4,6 +4,7 @@ import AssetForm from "./components/AssetForm";
 import type { AssetItem, AssetLayoutContext } from "../../types/Asset";
 
 import RoutePath from "../../constants/Routes";
+import { AssetMode } from "../../types/AssetMode";
 
 
 const AssetCreate = () => {
@@ -24,6 +25,7 @@ const AssetCreate = () => {
 
     return (
         <AssetForm
+            mode={AssetMode.CREATE}
             onSave={handleSave}
             onCancel={handleCancel} />
     );

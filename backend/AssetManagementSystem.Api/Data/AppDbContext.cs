@@ -17,6 +17,11 @@ namespace AssetManagementSystem.Api.Data
         {
             // IEntityTypeConfiguration<T>を実装した設定を自動的に適用する
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+            // TODO long型をdecimal型に変更するか検討
+            modelBuilder.HasSequence<long>("Seq_AssetNo", "dbo")
+                        .StartsAt(1)
+                        .IncrementsBy(1);
         }
 
     }
