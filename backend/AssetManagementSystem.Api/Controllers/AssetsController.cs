@@ -1,6 +1,8 @@
 using AssetManagementSystem.Api.Data;
 using AssetManagementSystem.Api.Entities;
+using AssetManagementSystem.Api.Migrations;
 using AssetManagementSystem.Api.Models;
+using Azure.Core;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +19,8 @@ namespace AssetManagementSystem.Api.Controllers
         {
             _assetContext = appDbContext;
         }
+
+
 
         private async Task<string> CreateAssetNumber()
         {
@@ -63,17 +67,19 @@ namespace AssetManagementSystem.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<AssetsResponse>> CreateAsset([FromBody] AssetsRequest request)
         {
+            var assetName = (request.AssetName ?? "").Trim();
 
             bool isCategoryValid = Enum.GetValues<AssetCategory>().Any(category => category.ToDisplayString() == request.Category);
 
             bool isStatusValid = Enum.GetValues<AssetStatus>().Any(status => status.ToDisplayString() == request.Status);
 
-            if (request.AssetName == "")
+
+            if (string.IsNullOrWhiteSpace(assetName))
             {
                 return BadRequest();
             }
 
-            if (request.AssetName.Length > 50)
+            if (assetName.Length > 50)
             {
                 return BadRequest();
             }
@@ -94,7 +100,7 @@ namespace AssetManagementSystem.Api.Controllers
             var asset = new Asset
             {
                 Id = Guid.NewGuid(),
-                AssetName = request.AssetName.Trim(),
+                AssetName = assetName,
                 Category = request.Category,
                 Status = request.Status,
                 ManagementNumber = managementNo,
@@ -120,6 +126,7 @@ namespace AssetManagementSystem.Api.Controllers
             return Created("", response);
         }
 
+        // Get api/asset/${id}
         [HttpGet("{id}")]
         public async Task<ActionResult<AssetsResponse>> GetAssetByIdAsync(Guid Id)
         {
@@ -145,6 +152,75 @@ namespace AssetManagementSystem.Api.Controllers
             });
 
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<AssetsResponse>> UpdateAssetAsync(Guid id, [FromBody] AssetsRequest request)
+        {
+            var asset = await _assetContext.Assets.FirstOrDefaultAsync(a => a.Id == id);
+
+            if (asset == null)
+            {
+                return NotFound(new { message = "備品がありません" });
+
+            }
+
+            var assetName = (request.AssetName ?? "").Trim();
+
+            var remarks = request.Remarks ?? "";
+
+            bool isCategoryValid = Enum.GetValues<AssetCategory>().Any(category => category.ToDisplayString() == request.Category);
+
+            bool isStatusValid = Enum.GetValues<AssetStatus>().Any(status => status.ToDisplayString() == request.Status);
+
+            if (string.IsNullOrWhiteSpace(assetName))
+            {
+                return BadRequest();
+            }
+
+            if (assetName.Length > 50)
+            {
+                return BadRequest();
+            }
+
+            if (!isCategoryValid)
+            {
+                return BadRequest();
+            }
+
+            if (!isStatusValid)
+            {
+                return BadRequest();
+            }
+
+            if (request.Remarks.Length > 200)
+            {
+                return BadRequest();
+            }
+
+            // 既存の asset を更新
+            asset.AssetName = assetName;
+            asset.Category = request.Category;
+            asset.Status = request.Status;
+            asset.PurchaseDate = request.PurchaseDate;
+            asset.Remarks = request.Remarks ?? "";
+
+            await _assetContext.SaveChangesAsync();
+
+            var response = new AssetResponse
+            {
+                Id = asset.Id,
+                AssetName = asset.AssetName,
+                Category = asset.Category,
+                Status = asset.Status,
+                ManagementNumber = asset.ManagementNumber,
+                PurchaseDate = asset.PurchaseDate,
+                Remarks = asset.Remarks
+            };
+
+            return Ok(response);
+
+        }
+      
 
     }
 }
