@@ -13,6 +13,11 @@ import {
     TableRow,
     TablePagination,
     Box,
+    Dialog,
+    Button,
+    DialogTitle,
+    DialogActions,
+    DialogContent,
 } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
@@ -25,6 +30,8 @@ type AssetTableProps = {
     count: number;
     page: number;
     rowsPerPage: number;
+    deleteSuccess: boolean;
+    informationDialogOpen: boolean;
     onPageChange: (
         event: React.MouseEvent<HTMLButtonElement> | null,
         page: number
@@ -32,7 +39,8 @@ type AssetTableProps = {
     onRowsPerPageChange: (
         event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => void;
-    onDelete?: (id: string) => void;
+    onDelete: (id: string) => void;
+    onDeleteDialogClose: () => void;
     selectedAssetIds: string[];
     onSelectAsset: (id: string) => void;
     onSelectAll: () => void;
@@ -46,6 +54,9 @@ const AssetTable = ({
     onPageChange,
     onRowsPerPageChange,
     onDelete,
+    onDeleteDialogClose,
+    deleteSuccess,
+    informationDialogOpen,
     selectedAssetIds,
     onSelectAsset,
     onSelectAll,
@@ -156,9 +167,7 @@ const AssetTable = ({
                                         <IconButton
                                             color="error"
                                             aria-label="削除"
-                                            onClick={() => {
-                                                onDelete?.(asset.id);
-                                            }}
+                                            onClick={() => onDelete(asset.id)}
                                         >
                                             <DeleteIcon />
                                         </IconButton>
@@ -181,6 +190,24 @@ const AssetTable = ({
                     flexShrink: 0,
                 }}
             />
+
+            {deleteSuccess && (
+                <Dialog open={informationDialogOpen} onClose={onDeleteDialogClose}>
+                    <DialogTitle>
+                        削除
+                    </DialogTitle>
+                    <DialogContent>
+                        削除が完了しました。
+                    </DialogContent>
+                    <DialogActions>
+                        <Button
+                            onClick={onDeleteDialogClose}
+                        >
+                            閉じる
+                        </Button>
+                    </DialogActions>
+                </Dialog>
+            )}
         </Box>
     );
 };

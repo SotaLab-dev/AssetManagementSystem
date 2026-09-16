@@ -8,7 +8,6 @@ import { useAssetSelection } from "./useAssetSelection";
 
 export const useAssetList = () => {
     const {
-        assets,
         setAssets,
     } = useOutletContext<AssetLayoutContext>();
 
@@ -34,15 +33,23 @@ export const useAssetList = () => {
         isStatusDialogOpen,
         bulkStatus,
         setBulkStatus,
+        deleteSuccess,
+        confirmDialogOpen,
+        setConfirmDialogOpen,
+        informationDialogOpen,
+        setInformationDialogOpen,
+        informationBulkDialogOpen,
         handleSelectAsset,
         handleSelectAll,
         handleDelete,
+        handleDeleteInformationDialogClose,
         handleBulkDelete,
+        handleBulkDeleteConfirmDialogClose,
         handleOpenStatusDialog,
         handleCloseStatusDialog,
         handleBulkStatusChange,
+        handleBulkDeleteInformationDialogClose,
     } = useAssetSelection({
-        assets,
         setAssets,
         paginatedAssets,
     });
@@ -66,6 +73,12 @@ export const useAssetList = () => {
         isStatusDialogOpen,
         bulkStatus,
         setBulkStatus,
+        deleteSuccess,
+        confirmDialogOpen,
+        setConfirmDialogOpen,
+        informationDialogOpen,
+        setInformationDialogOpen,
+        informationBulkDialogOpen,
         handleSearch: handleSearchAndResetPage,
         handleReset: handleResetAndResetPage,
         handleChangePage,
@@ -73,7 +86,10 @@ export const useAssetList = () => {
         handleSelectAsset,
         handleSelectAll,
         handleDelete,
+        handleDeleteInformationDialogClose,
         handleBulkDelete,
+        handleBulkDeleteInformationDialogClose,
+        handleBulkDeleteConfirmDialogClose,
         handleOpenStatusDialog,
         handleCloseStatusDialog,
         handleBulkStatusChange,

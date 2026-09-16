@@ -2,9 +2,9 @@ import { useState } from "react";
 
 import { DEFAULT_ASSET_STATUS } from "../../../constants/Asset";
 import type { AssetItem } from "../../../types/Asset";
+import { GetAssets } from "../../../components/AssetLayout/AssetLayout";
 
 type UseAssetSelectionProps = {
-    assets: AssetItem[];
     setAssets: React.Dispatch<React.SetStateAction<AssetItem[]>>;
     paginatedAssets: AssetItem[];
 };
@@ -16,6 +16,10 @@ export const useAssetSelection = ({
     const [selectedAssetIds, setSelectedAssetIds] = useState<string[]>([]);
     const [isStatusDialogOpen, setIsStatusDialogOpen] = useState<boolean>(false);
     const [bulkStatus, setBulkStatus] = useState(DEFAULT_ASSET_STATUS);
+    const [deleteSuccess, setDeleteSuccess] = useState<boolean>(false);
+    const [confirmDialogOpen, setConfirmDialogOpen] = useState<boolean>(false);
+    const [informationDialogOpen, setInformationDialogOpen] = useState<boolean>(false);
+    const [informationBulkDialogOpen, setInformationBulkDialogOpen] = useState<boolean>(false);
 
     const handleSelectAsset = (id: string) => {
         setSelectedAssetIds((prev) =>
@@ -51,46 +55,67 @@ export const useAssetSelection = ({
         ]);
     };
 
-    const handleDelete = (id: string) => {
-        const confirmed = window.confirm(
-            "この備品を本当に削除しますか？"
-        );
+    const handleDelete = async (id: string) => {
+        try {
+            const res = await fetch(`/api/assets/${id}`, {
+                method: "DELETE",
+            });
+            if (res.ok) {
+                const data = await GetAssets();
+                setAssets(data);
 
-        if (!confirmed) {
-            return;
+                setDeleteSuccess(true);
+                setInformationDialogOpen(true);
+            }
+            else {
+                console.log(res.status)
+            }
         }
+        catch (err) {
+            console.error("API error", err);
+        }
+    }
 
-        setAssets((prev) =>
-            prev.filter(
-                (asset) => asset.id !== id
-            )
-        );
-        setSelectedAssetIds((prev) =>
-            prev.filter(
-                (selectedId) => selectedId !== id),
-        );
+    const handleDeleteInformationDialogClose = () => {
+        setInformationDialogOpen(false);
+        setDeleteSuccess(false);
     };
 
-    const handleBulkDelete = () => {
-        if (selectedAssetIds.length === 0) {
-            return;
+    const handleDeleteDialogClose = () => {
+        setConfirmDialogOpen(false);
+    }
+
+    const handleBulkDelete = async () => {
+        try {
+            setConfirmDialogOpen(false);
+            const res = await fetch("/api/assets/bulk", {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ ids: selectedAssetIds }),
+            });
+
+            if (res.ok) {
+                const data = await GetAssets();
+                setAssets(data);
+               
+                setDeleteSuccess(true);
+                setInformationBulkDialogOpen(true);
+            }
         }
-
-        const confirmed = window.confirm(
-            `${selectedAssetIds.length}件の備品を削除しますか？`,
-        );
-
-        if (!confirmed) {
-            return;
+        catch (err) {
+            console.error("API error", err);
         }
+    };
 
-        setAssets((prev) =>
-            prev.filter(
-                (asset) => !selectedAssetIds.includes(asset.id),
-            ),
-        );
+    const handleBulkDeleteConfirmDialogClose = () => {
+        setConfirmDialogOpen(false);
+    };
 
-        setSelectedAssetIds([]);
+    const handleBulkDeleteInformationDialogClose = () => {
+        setInformationBulkDialogOpen(false);
+        setSelectedAssetIds([]); 
     };
 
     const handleOpenStatusDialog = () => {
@@ -130,10 +155,21 @@ export const useAssetSelection = ({
         isStatusDialogOpen,
         bulkStatus,
         setBulkStatus,
+        deleteSuccess,
+        confirmDialogOpen,
+        setConfirmDialogOpen,
+        informationDialogOpen,
+        setInformationDialogOpen,
+        informationBulkDialogOpen,
+        setInformationBulkDialogOpen,
         handleSelectAsset,
         handleSelectAll,
         handleDelete,
+        handleDeleteInformationDialogClose,
         handleBulkDelete,
+        handleDeleteDialogClose,
+        handleBulkDeleteInformationDialogClose,
+        handleBulkDeleteConfirmDialogClose,
         handleOpenStatusDialog,
         handleCloseStatusDialog,
         handleBulkStatusChange

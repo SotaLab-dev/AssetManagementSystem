@@ -1,5 +1,6 @@
 import {
     Box,
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -26,6 +27,11 @@ const Asset = () => {
         isStatusDialogOpen,
         bulkStatus,
         setBulkStatus,
+        deleteSuccess,
+        informationBulkDialogOpen,
+        confirmDialogOpen,
+        setConfirmDialogOpen,
+        informationDialogOpen,
         handleSearch,
         handleReset,
         handleChangePage,
@@ -33,10 +39,13 @@ const Asset = () => {
         handleSelectAsset,
         handleSelectAll,
         handleDelete,
+        handleDeleteInformationDialogClose,
         handleBulkDelete,
         handleOpenStatusDialog,
         handleCloseStatusDialog,
-        handleBulkStatusChange
+        handleBulkStatusChange,
+        handleBulkDeleteInformationDialogClose,
+        handleBulkDeleteConfirmDialogClose
     } = useAssetList();
 
     return (
@@ -73,11 +82,50 @@ const Asset = () => {
                     variant="outlined"
                     color="error"
                     disabled={selectedAssetIds.length === 0}
-                    onClick={handleBulkDelete}
+                    onClick={() => setConfirmDialogOpen(true)}
                 >
                     選択した備品を削除
                 </AppButton>
             </Stack>
+
+            <Dialog open={confirmDialogOpen} onClose={handleBulkDeleteConfirmDialogClose}>
+                <DialogTitle>
+                    削除確認
+                </DialogTitle>
+                <DialogContent>
+                    {selectedAssetIds.length}件の備品を削除してもよろしいですか？
+                </DialogContent>
+                < DialogActions >
+                    <Button
+                        onClick={handleBulkDeleteConfirmDialogClose}
+                    >
+                        閉じる
+                    </Button>
+                    <Button
+                        onClick={handleBulkDelete}
+                        color="error"
+                        autoFocus
+                    >
+                        削除
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog open={informationBulkDialogOpen} onClose={handleBulkDeleteInformationDialogClose}>
+                <DialogTitle>
+                    削除完了
+                </DialogTitle>
+                <DialogContent>
+                    {selectedAssetIds.length}件の削除が完了しました。
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={handleBulkDeleteInformationDialogClose}
+                    >
+                        閉じる
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
             <Box
                 sx={{
@@ -89,6 +137,9 @@ const Asset = () => {
                 <AssetTable
                     assets={paginatedAssets}
                     onDelete={handleDelete}
+                    onDeleteDialogClose={handleDeleteInformationDialogClose}
+                    deleteSuccess={deleteSuccess}
+                    informationDialogOpen={informationDialogOpen}
                     count={filteredAssets.length}
                     page={page}
                     onPageChange={handleChangePage}

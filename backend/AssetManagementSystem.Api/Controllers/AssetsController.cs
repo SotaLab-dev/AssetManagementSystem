@@ -220,7 +220,54 @@ namespace AssetManagementSystem.Api.Controllers
             return Ok(response);
 
         }
-      
+              
+        [HttpDelete("{id}")]
+        public async Task<ActionResult> DeleteAssetAsync(Guid id)
+        {
+            var asset = await _assetContext.Assets.FirstOrDefaultAsync(a => a.Id == id);
 
+            if (asset == null)
+            {
+                return NotFound(new { message = "備品がありません" });
+            }
+
+            _assetContext.Assets.Remove(asset);
+
+            await _assetContext.SaveChangesAsync();
+
+            return NoContent();
+
+
+        }
+
+
+        [HttpDelete("bulk")]
+        public async Task<ActionResult> DeleteAssetsAsync([FromBody] BulkDeleteRequest request)
+        {
+            if(request == null)
+            {
+                return BadRequest();
+            };
+
+            if(request.Ids.Length == 0)
+            {
+                return BadRequest();
+            };
+
+            var assets = await _assetContext.Assets
+                .Where(a => request.Ids.Contains(a.Id))
+                .ToListAsync();
+
+            if (assets.Count != request.Ids.Length)
+            {
+                return NotFound(new { message = "備品がありません" });
+            }
+
+            _assetContext.Assets.RemoveRange(assets);
+
+            await _assetContext.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
