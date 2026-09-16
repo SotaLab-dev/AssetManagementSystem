@@ -99,7 +99,7 @@ export const useAssetSelection = ({
             if (res.ok) {
                 const data = await GetAssets();
                 setAssets(data);
-               
+
                 setDeleteSuccess(true);
                 setInformationBulkDialogOpen(true);
             }
@@ -115,7 +115,7 @@ export const useAssetSelection = ({
 
     const handleBulkDeleteInformationDialogClose = () => {
         setInformationBulkDialogOpen(false);
-        setSelectedAssetIds([]); 
+        setSelectedAssetIds([]);
     };
 
     const handleOpenStatusDialog = () => {
@@ -131,23 +131,29 @@ export const useAssetSelection = ({
         setIsStatusDialogOpen(false);
     };
 
-    const handleBulkStatusChange = () => {
-        if (selectedAssetIds.length === 0) {
-            return;
-        };
+    const handleBulkStatusChange = async () => {
+        try {
+            if (selectedAssetIds.length === 0) {
+                return;
+            };
+            const res = await fetch("/api/assets/bulk", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ ids: selectedAssetIds, status: bulkStatus }),
+            });
 
-        setAssets((prev) =>
-            prev.map((asset) =>
-                selectedAssetIds.includes(asset.id)
-                    ? {
-                        ...asset,
-                        status: bulkStatus,
-                    }
-                    : asset,
-            ),
-        );
-        setSelectedAssetIds([]);
-        setIsStatusDialogOpen(false);
+            if (res.ok) {
+                const data = await GetAssets();
+                setAssets(data);
+            }
+            setSelectedAssetIds([]);
+            setIsStatusDialogOpen(false);
+        }
+        catch (err) {
+            console.error("API error", err);
+        }
     };
 
     return {

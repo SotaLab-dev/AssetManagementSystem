@@ -269,5 +269,38 @@ namespace AssetManagementSystem.Api.Controllers
 
             return NoContent();
         }
+
+        [HttpPatch("bulk")]
+        public async Task<ActionResult> UpdateStatusAsync([FromBody] BulkUpdateStatusRequest request)
+        {
+            if (request == null || request.Ids == null || request.Ids.Length == 0)
+            {
+                return BadRequest();
+            }
+
+            bool isStatusValid = Enum.GetValues<AssetStatus>().Any(status => status.ToDisplayString() == request.Status);
+
+            if (!isStatusValid)
+            {
+                return BadRequest();
+            }
+
+            var assets = await _assetContext.Assets
+                .Where(a => request.Ids.Contains(a.Id))
+                .ToListAsync();
+
+            if (assets.Count != request.Ids.Length)
+            {
+                return NotFound(new { message = "備品がありません" });
+            }
+
+            foreach (var asset in assets)
+            {
+                asset.Status = request.Status;
+            }
+
+            await _assetContext.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }
