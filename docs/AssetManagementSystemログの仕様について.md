@@ -240,3 +240,60 @@ NLog.config（最終版例）
     <logger name="*" minlevel="Trace" writeTo="logFile" />
   </rules>
 </nlog>
+
+
+## 実装例
+
+Program.csで以下の実装を追加する
+```
+using NLog;
+using NLog.Web;
+
+var logger = LogManager.Setup().LoadConfigurationFromFile("NLog.config").GetCurrentClassLogger();
+
+try
+{
+    logger.Info("アプリケーション起動");
+
+    var builder = WebApplication.CreateBuilder(args);
+
+    builder.Logging.ClearProviders();
+    builder.Services.AddSingleton<ILoggerFactory,LogLoggerFactory>();
+    builder.Host.UseNLog();
+
+    builder.Services.AddControllers();
+    builder.Services.AddScoped<AssetService>();
+
+    var app = builder.Build();
+
+    app.MapControllers();
+    app.Run();
+}
+catch (Exception ex)
+{
+    logger.Fatal(ex, "アプリケーションが起動できませんでした");
+    throw;
+}
+finally
+{
+    LogManager.Shutdown();
+}
+```
+
+②Servicesは以下で以下のクラスを追加
+```
+public class AssetService
+{
+    private readonly Logger logger;
+
+    public AssetService()
+    {
+        logger = LogManager.GetCurrentClassLogger();
+    }
+}
+```
+③ログを出力したいか所で以下の設定を行う
+infoの部分はその時のログレベルを設定
+```
+logger.Info($"Asset保存API呼び出し: id={dto.Id}");
+```
