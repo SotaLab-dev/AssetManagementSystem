@@ -13,7 +13,7 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         configure: (proxy, options) => {
-          proxy.on("proxyReq", (proxyReq, req, res) => {
+          proxy.on("proxyReq", (_proxyReq, req, res) => {
             if(!options.target) return;
             const target = new URL(options.target);
             const finalUrl = `${target.origin}${req.url}`;
