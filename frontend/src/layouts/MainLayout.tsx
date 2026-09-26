@@ -5,6 +5,7 @@ import Footer from "../components/layout/Footer/Footer";
 import Header from "../components/layout/Header/Header";
 import Sidebar from "../components/layout/Sidebar/Sidebar";
 import { useState } from "react";
+import { AppMode } from "../types/AppMode";
 
 const MainLayout = () => {
     const [sidebarOpen, setSidebarOpen] = useState<boolean>(false);
@@ -18,6 +19,7 @@ const MainLayout = () => {
             }}
         >
             <Header
+                mode={AppMode.MAIN}
                 sidebarOpen={sidebarOpen}
                 onMenuClick={() => {
                     setSidebarOpen((prev) => !prev);

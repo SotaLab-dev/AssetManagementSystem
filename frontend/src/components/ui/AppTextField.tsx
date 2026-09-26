@@ -1,11 +1,12 @@
 import TextField from "@mui/material/TextField";
 import type { TextFieldProps } from "@mui/material/TextField";
+import type { ReactNode } from "react";
 
 type AppTextFieldProps = Omit<
     TextFieldProps,
     "label"
 > & {
-    label: string;
+    label: string | ReactNode;
 };
 
 const AppTextField = ({

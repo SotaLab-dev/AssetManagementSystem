@@ -1,13 +1,19 @@
 const Routes = {
     login: "/login",
 
+    accountManage: "/account/manage",
+
+    accountSetting: "/account/setting",
+
+    accountEdit: "/account/edit/:name",
+
     dashboard: "/",
 
     assets: "/assets",
 
     assetCreate: "/assets/create",
 
-    assetEdit: "/asset/edit/:id",
+    assetEdit: "/assets/edit/:id",
 
     users: "/users",
 
