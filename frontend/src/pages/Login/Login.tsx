@@ -1,14 +1,17 @@
-import { useNavigate } from "react-router-dom";
-import Routes from "../../constants/Routes";
 import { AccountMode } from "../../types/AccountMode";
 import AccountForm from "./components/AccountForm";
+import { useAccountList } from "./hooks/useAccountList";
 
 const Login = () => {
-    const navigate = useNavigate();
-
-    const handleLogin = () => {
-        navigate(Routes.dashboard);
-    };
+    const {
+        accountName,
+        setAccountName,
+        password,
+        setPassword,
+        showPassword,
+        handleLogin,
+        togglePasswordVisibility,
+    } = useAccountList();
 
     return (
         <AccountForm
@@ -16,6 +19,14 @@ const Login = () => {
             title="ログイン"
             onSubmitButtonName="ログイン"
             onSubmit={handleLogin}
+            onTogglePassword={togglePasswordVisibility}
+            accountName={accountName}
+            setAccountName={setAccountName}
+            password={password}
+            setPassword={setPassword}
+            showPassword={showPassword}
+            // rememberMe={false}
+            // setRememberMe={() => {}}
         />
     );
 };

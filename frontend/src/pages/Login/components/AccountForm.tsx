@@ -1,9 +1,5 @@
-import { useEffect, useState } from "react";
-
 import {
     Box,
-    Checkbox,
-    FormControlLabel,
     IconButton,
     InputAdornment,
     Paper,
@@ -18,49 +14,68 @@ import AppTextField from "../../../components/ui/AppTextField";
 import { AccountMode } from "../../../types/AccountMode"
 import type { AccountInfo } from "../../../types/User";
 
-
 type AccountFormProps = {
     mode: AccountMode;
     title: string;
     accounts?: AccountInfo;
-    onSubmitButtonName: string
+    onSubmitButtonName: string;
+    accountName: string;
+    setAccountName: (name: string) => void;
+    password: string;
+    setPassword: (password: string) => void;
+    showPassword: boolean;
+    passwordReinput?: string;
+    setPasswordReinput?: (password: string) => void;
+    newPassword?: string;
+    setNewPassword?: (password: string) => void;
+    newPasswordReinput?: string;
+    setNewPasswordReinput?: (password: string) => void;
+    currentPassword?: string;
+    showPasswordReinput?: boolean;
+    showNewPassword?: boolean;
+    showNewPasswordReinput?: boolean;
+    showCurrentPassword?: boolean;
+    // rememberMe: boolean;
+    // setRememberMe: (remember: boolean) => void;
     onCancel?: () => void;
     onSubmit: () => void;
+    onTogglePassword?: () => void;
+    onTogglePasswordReinput?: () => void;
+    onToggleNewPassword?: () => void;
+    onToggleNewPasswordReinput?: () => void;
+    togglePasswordVisibility?: () => void;
+    togglePasswordReinputVisibility?: () => void;
+    toggleNewPasswordVisibility?: () => void;
+    toggleNewPasswordReinputVisibility?: () => void;
 }
-const AccountForm = ({ mode, title, accounts, onCancel, onSubmit, onSubmitButtonName }: AccountFormProps) => {
-    const [accountName, setAccountName] = useState(accounts?.name ?? "");
-    const [password, setPassword] = useState(accounts?.password ?? "");
-    const [passwordReinput, setPasswordReinput] = useState("");
-    const [, setMaskedPassword] = useState<string>("")
-    const [, setMaskedPasswordReinput] = useState<string>("");
-    const [showPassword, setShowPassword] = useState<boolean>(false);
-    const [showPasswordReinput, setShowPasswordReinput] = useState<boolean>(false);
-    const [rememberMe, setRememberMe] = useState(false);
-
-    // パスワードの表示・非表示を切り替える
-    const togglePasswordVisibility = () => {
-        if (!showPassword) {
-            setMaskedPassword("•".repeat(password.length));
-        }
-        setShowPassword(!showPassword);
-    };
-
-    const togglePasswordReinputVisibility = () => {
-        if (!showPasswordReinput) {
-            setMaskedPasswordReinput("●".repeat(passwordReinput.length));
-        }
-        setShowPasswordReinput(!showPasswordReinput);
-    }
-
-    useEffect(() => {
-        if (accounts) {
-            setAccountName(accounts.name);
-            setPassword(accounts.password);
-            setMaskedPassword("•".repeat(accounts.password.length));
-        }
-    }, [accounts]);
-
-
+const AccountForm = ({
+    mode,
+    title,
+    onSubmitButtonName,
+    accountName,
+    setAccountName,
+    password,
+    setPassword,
+    passwordReinput,
+    setPasswordReinput,
+    newPassword,
+    setNewPassword,
+    newPasswordReinput,
+    setNewPasswordReinput,
+    currentPassword,
+    showPassword,
+    showPasswordReinput,
+    showNewPassword,
+    showNewPasswordReinput,
+    // rememberMe,
+    // setRememberMe,
+    onCancel,
+    onSubmit,
+    onTogglePassword,
+    onTogglePasswordReinput,
+    onToggleNewPassword,
+    onToggleNewPasswordReinput,
+}: AccountFormProps) => {
     return (
         <Box
             sx={{
@@ -73,7 +88,7 @@ const AccountForm = ({ mode, title, accounts, onCancel, onSubmit, onSubmitButton
         >
             <Paper
                 sx={{
-                    width: 420,
+                    width: 500,
                     p: 5,
                 }}
             >
@@ -101,46 +116,43 @@ const AccountForm = ({ mode, title, accounts, onCancel, onSubmit, onSubmitButton
                                 onChange={(event) => setPassword(event.target.value)}
                                 placeholder="パスワード"
                                 value={password}
-                                autoComplete="off" // ブラウザのオートコンプリート機能を無効化
-                                {...({
-                                    InputProps: {
+                                autoComplete="off"
+                                slotProps={{
+                                    input: {
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
-                                                    onClick={togglePasswordVisibility}
+                                                    onClick={onTogglePassword}
                                                     edge="end"
                                                 >
                                                     {showPassword ? <VisibilityOff /> : <Visibility />}
                                                 </IconButton>
                                             </InputAdornment>
                                         ),
-                                    }
-                                }
-                                )}
+                                    },
+                                }}
                             />
-
                             <AppTextField
                                 label="パスワード再入力"
-                                type={showPassword ? "text" :"password"}
-                                onChange={(event) => setPasswordReinput(event.target.value)}
+                                type={showPasswordReinput ? "text" : "password"}
+                                onChange={(event) => setPasswordReinput?.(event.target.value)}
                                 placeholder="パスワード再入力"
                                 value={passwordReinput}
                                 autoComplete="off" // ブラウザのオートコンプリート機能を無効化
-                                {...({
-                                    InputProps: {
+                                slotProps={{
+                                    input: {
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
-                                                    onClick={togglePasswordReinputVisibility}
+                                                    onClick={onTogglePasswordReinput}
                                                     edge="end"
                                                 >
                                                     {showPasswordReinput ? <VisibilityOff /> : <Visibility />}
                                                 </IconButton>
                                             </InputAdornment>
                                         ),
-                                    }
-                                }
-                                )}
+                                    },
+                                }}
                             />
                         </>
                     )}
@@ -149,102 +161,91 @@ const AccountForm = ({ mode, title, accounts, onCancel, onSubmit, onSubmitButton
                         <>
                             <AppTextField
                                 label="現在のパスワード"
-                                type={showPassword ? "text" : "password"}
+                                type={"password"}
                                 disabled
-                                onChange={(event) => setPassword(event.target.value)}
-                                placeholder="パスワード"
-                                value={password}
+                                placeholder="現在のパスワード"
+                                value={currentPassword}
                                 autoComplete="off" // ブラウザのオートコンプリート機能を無効化
-                                {...({
-                                    InputProps: {
-                                        endAdornment: (
-                                            <InputAdornment position="end">
-                                                <IconButton
-                                                    onClick={togglePasswordVisibility}
-                                                    edge="end"
-                                                >
-                                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                </IconButton>
-                                            </InputAdornment>
-                                        ),
-                                    }
-                                }
-                                )}
                             />
-
                             <AppTextField
                                 label="新しいパスワード"
-                                type={showPassword ? "text" : "password"}
-                                onChange={(event) => setPasswordReinput(event.target.value)}
-                                placeholder="パスワード再入力"
-                                value={passwordReinput}
+                                type={showNewPassword ? "text" : "password"}
+                                onChange={(event) => setNewPassword?.(event.target.value)}
+                                placeholder="新しいパスワード"
+                                value={newPassword}
                                 autoComplete="off" // ブラウザのオートコンプリート機能を無効化
-                                {...({
-                                    InputProps: {
+                                slotProps={{
+                                    input: {
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
-                                                    onClick={togglePasswordReinputVisibility}
+                                                    onClick={onToggleNewPassword}
                                                     edge="end"
                                                 >
-                                                    {showPasswordReinput ? <VisibilityOff /> : <Visibility />}
+                                                    {showNewPassword ? <VisibilityOff /> : <Visibility />}
                                                 </IconButton>
                                             </InputAdornment>
                                         ),
-                                    }
-                                }
-                                )}
+                                    },
+                                }}
                             />
                             <AppTextField
                                 label="新しいパスワード確認用"
-                                type={showPassword ? "text" : "password"}
-                                onChange={(event) => setPasswordReinput(event.target.value)}
-                                placeholder="パスワード再入力"
-                                value={passwordReinput}
+                                type={showNewPasswordReinput ? "text" : "password"}
+                                onChange={(event) => setNewPasswordReinput?.(event.target.value)}
+                                placeholder="新しいパスワード確認用"
+                                value={newPasswordReinput}
                                 autoComplete="off" // ブラウザのオートコンプリート機能を無効化
-                                {...({
-                                    InputProps: {
+                                slotProps={{
+                                    input: {
                                         endAdornment: (
                                             <InputAdornment position="end">
                                                 <IconButton
-                                                    onClick={togglePasswordReinputVisibility}
+                                                    onClick={onToggleNewPasswordReinput}
                                                     edge="end"
                                                 >
-                                                    {showPasswordReinput ? <VisibilityOff /> : <Visibility />}
+                                                    {showNewPasswordReinput ? <VisibilityOff /> : <Visibility />}
                                                 </IconButton>
                                             </InputAdornment>
                                         ),
-                                    }
-                                }
-                                )}
+                                    },
+                                }}
                             />
+
                         </>
                     )}
 
                     {mode === AccountMode.LOGIN && (
-                        <AppTextField
-                            label="パスワード"
-                            type={showPassword ? "text" : "password"}
-                            onChange={(event) => setPassword(event.target.value)}
-                            placeholder="パスワード"
-                            value={password}
-                            autoComplete="off" // ブラウザのオートコンプリート機能を無効化
-                            {...({
-                                InputProps: {
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                onClick={togglePasswordVisibility}
-                                                edge="end"
-                                            >
-                                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    ),
-                                }
-                            }
-                            )}
-                        />
+                        <>
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                }}
+                            >
+                                <AppTextField
+                                    label="パスワード"
+                                    type={showPassword ? "text" : "password"}
+                                    onChange={(event) => setPassword(event.target.value)}
+                                    placeholder="パスワード"
+                                    value={password}
+                                    autoComplete="off"
+                                    slotProps={{
+                                        input: {
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <IconButton onClick={onTogglePassword} edge="end">
+                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                    </IconButton>
+                                                </InputAdornment>
+                                            ),
+                                        },
+                                    }}
+                                />
+
+                            </Box>
+                        </>
+
                     )}
 
                     {mode !== AccountMode.LOGIN && (
@@ -256,7 +257,7 @@ const AccountForm = ({ mode, title, accounts, onCancel, onSubmit, onSubmitButton
                         </AppButton>
                     )}
 
-                    {mode === AccountMode.LOGIN && (
+                    {/* {mode === AccountMode.LOGIN && (
                         <FormControlLabel
                             control={
                                 <Checkbox
@@ -268,7 +269,7 @@ const AccountForm = ({ mode, title, accounts, onCancel, onSubmit, onSubmitButton
                             }
                             label="ログイン状態を保持"
                         />
-                    )}
+                    )} */}
 
                     <AppButton
                         fullWidth
@@ -277,8 +278,8 @@ const AccountForm = ({ mode, title, accounts, onCancel, onSubmit, onSubmitButton
                         {onSubmitButtonName}
                     </AppButton>
                 </Stack>
-            </Paper>
-        </Box>
+            </Paper >
+        </Box >
     );
 };
 
