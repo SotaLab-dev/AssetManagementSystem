@@ -1,17 +1,20 @@
+import type { InputBaseProps } from "@mui/material";
 import TextField from "@mui/material/TextField";
 import type { TextFieldProps } from "@mui/material/TextField";
 import type { ReactNode } from "react";
 
 type AppTextFieldProps = Omit<
     TextFieldProps,
-    "label"
+    "label" | "InputProps"
 > & {
-    label: string | ReactNode;
+  label: string | ReactNode;
+  InputProps?: Partial<InputBaseProps>;
 };
 
 const AppTextField = ({
     fullWidth = true,
     sx,
+    InputProps,
     ...props
 }: AppTextFieldProps) => {
     return (
