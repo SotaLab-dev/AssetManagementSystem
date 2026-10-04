@@ -30,7 +30,15 @@ namespace AssetManagementSystem.Api.Controllers
                     model.UserName
                     );
 
-                return Ok(new { token = token });
+                Response.Cookies.Append("token", token, new CookieOptions 
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                    Expires = DateTimeOffset.UtcNow.AddHours(1)
+                });
+
+                return Ok();
             }
             return Unauthorized();
         }

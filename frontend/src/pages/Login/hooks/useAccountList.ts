@@ -37,14 +37,7 @@ export const useAccountList = () => {
             return;
         }
 
-        // JWTを取得
-        const data = await res.json();
-        const token = data.token;
-
-        localStorage.setItem("token", token);
-
         navigate(Routes.dashboard);
-
     };
 
     const handleAccountDelete = (accountName: string): void => {
