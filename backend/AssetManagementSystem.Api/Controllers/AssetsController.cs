@@ -3,12 +3,14 @@ using AssetManagementSystem.Api.Entities;
 using AssetManagementSystem.Api.Migrations;
 using AssetManagementSystem.Api.Models;
 using Azure.Core;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace AssetManagementSystem.Api.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AssetsController : ControllerBase

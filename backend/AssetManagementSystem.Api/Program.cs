@@ -40,6 +40,20 @@ namespace AssetManagementSystem.Api
                     ValidAudience = jwtSettings["Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(key)
                 };
+
+                // Cookieからtokenを読む
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var token = context.Request.Cookies["token"];
+                        if (!string.IsNullOrWhiteSpace(token))
+                        {
+                            context.Token = token;
+                        }
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             builder.Services.AddControllers();

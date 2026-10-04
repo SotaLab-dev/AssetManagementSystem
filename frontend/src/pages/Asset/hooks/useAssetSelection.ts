@@ -3,6 +3,7 @@ import { useState } from "react";
 import { DEFAULT_ASSET_STATUS } from "../../../constants/Asset";
 import type { AssetItem } from "../../../types/Asset";
 import { GetAssets } from "../../../components/AssetLayout/AssetLayout";
+import api from "../../../services/api/axios";
 
 type UseAssetSelectionProps = {
     setAssets: React.Dispatch<React.SetStateAction<AssetItem[]>>;
@@ -57,10 +58,8 @@ export const useAssetSelection = ({
 
     const handleDelete = async (id: string) => {
         try {
-            const res = await fetch(`/api/assets/${id}`, {
-                method: "DELETE",
-            });
-            if (res.ok) {
+            const res = await api.delete(`/assets/${id}`);
+            if (res.status === 200) {
                 const data = await GetAssets();
                 setAssets(data);
 
@@ -88,15 +87,11 @@ export const useAssetSelection = ({
     const handleBulkDelete = async () => {
         try {
             setConfirmDialogOpen(false);
-            const res = await fetch("/api/assets/bulk", {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ ids: selectedAssetIds }),
+            const res = await api.delete("/assets/bulk", {
+                data: { ids: selectedAssetIds }
             });
 
-            if (res.ok) {
+            if (res.status === 200) {
                 const data = await GetAssets();
                 setAssets(data);
 
@@ -136,15 +131,12 @@ export const useAssetSelection = ({
             if (selectedAssetIds.length === 0) {
                 return;
             };
-            const res = await fetch("/api/assets/bulk", {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ ids: selectedAssetIds, status: bulkStatus }),
+            const res = await api.patch("/assets/bulk", {
+                ids: selectedAssetIds,
+                status: bulkStatus
             });
 
-            if (res.ok) {
+            if (res.status === 200) {
                 const data = await GetAssets();
                 setAssets(data);
             }

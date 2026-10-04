@@ -3,6 +3,7 @@ import type { AccountInfo } from "../../../types/User";
 import { mockAccountList } from "../../../mocks/accounts";
 import Routes from "../../../constants/Routes";
 import { useNavigate } from "react-router-dom";
+import api from "../../../services/api/axios";
 
 export const useAccountList = () => {
     const navigate = useNavigate();
@@ -25,14 +26,8 @@ export const useAccountList = () => {
             UserName: accountName,
             Password: password
         }
-        const res = await fetch("/api/auth/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(request)
-        })
-        if (!res.ok) {
+        const res = await api.post("/auth/login", request);
+        if (res.status !== 200) {
             // TODO エラーメッセージの表示方法は要検討
             return;
         }

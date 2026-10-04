@@ -17,6 +17,7 @@ import RoutePath from "../../../constants/Routes";
 
 import { useNavigate } from "react-router-dom";
 import { AssetMode } from "../../../types/AssetMode";
+import api from "../../../services/api/axios";
 
 type AssetFormProps = {
     initialAsset?: AssetItem;
@@ -83,15 +84,7 @@ const AssetForm = ({ initialAsset, mode, onCancel }: AssetFormProps) => {
 
         try {
             if (mode == AssetMode.CREATE) {
-                const res = await fetch("/api/assets", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(request)
-                })
-                console.log("status:", res.status)
-
+                const res = await api.post("/assets", request);
 
                 if (res.status == 201) {
                     navigate(RoutePath.assets)
@@ -100,15 +93,9 @@ const AssetForm = ({ initialAsset, mode, onCancel }: AssetFormProps) => {
                 }
             }
             else if (mode == AssetMode.EDIT) {
-                const res = await fetch(`/api/assets/${id}`, {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(request)
-                })
+                const res = await api.put(`/assets/${id}`, request);
 
-                if (res.ok) {
+                if (res.status == 200) {
                     navigate(RoutePath.assets)
                 }else{
                     console.log(res.status)

@@ -3,18 +3,17 @@ import { Outlet, useLocation } from "react-router-dom";
 
 import type { AssetItem, AssetSearchCondition } from "../../types/Asset";
 import { AssetMode } from "../../types/AssetMode";
+import api from "../../services/api/axios";
 
 export const GetAssets = async () => {
     try {
-        const res = await fetch("/api/assets");
+        const res = await api.get("/assets");
 
-        if (!res.ok) {
+        if (res.status !== 200) {
             throw new Error("API request failed");
         }
-
-        const data = await res.json();
         
-        return data;
+        return res.data;
     }
     catch (err) {
         console.error("API error", err);
