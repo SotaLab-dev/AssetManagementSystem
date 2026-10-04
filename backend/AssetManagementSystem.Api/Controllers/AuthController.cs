@@ -42,5 +42,14 @@ namespace AssetManagementSystem.Api.Controllers
             }
             return Unauthorized();
         }
+
+        [AllowAnonymous]
+        [HttpPost("logout")]
+        public IActionResult Logout()
+        {  
+            Response.Cookies.Delete("token");
+
+            return Ok();
+        }
     }
 }
