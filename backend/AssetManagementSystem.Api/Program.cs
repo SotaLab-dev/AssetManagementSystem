@@ -1,4 +1,5 @@
 using AssetManagementSystem.Api.Data;
+using AssetManagementSystem.Api.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -69,6 +70,7 @@ namespace AssetManagementSystem.Api
             }
 
             app.UseRouting();
+            app.UseMiddleware<CsrfValidationMiddleware>();
             app.UseAuthentication();
             app.UseAuthorization();
 

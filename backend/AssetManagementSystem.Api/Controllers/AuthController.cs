@@ -38,6 +38,16 @@ namespace AssetManagementSystem.Api.Controllers
                     Expires = DateTimeOffset.UtcNow.AddHours(1)
                 });
 
+                var csrfToken = Guid.NewGuid().ToString("N");
+
+                Response.Cookies.Append("csrf_token", csrfToken, new CookieOptions
+                {
+                    HttpOnly = false,
+                    Secure = true,
+                    SameSite = SameSiteMode.Lax,
+                    Expires = DateTimeOffset.UtcNow.AddHours(1)
+                });
+
                 return Ok();
             }
             return Unauthorized();
@@ -46,8 +56,9 @@ namespace AssetManagementSystem.Api.Controllers
         [AllowAnonymous]
         [HttpPost("logout")]
         public IActionResult Logout()
-        {  
+        {
             Response.Cookies.Delete("token");
+            Response.Cookies.Delete("csrf_token");
 
             return Ok();
         }
