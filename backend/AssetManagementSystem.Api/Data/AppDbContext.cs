@@ -13,6 +13,10 @@ namespace AssetManagementSystem.Api.Data
 
         public DbSet<Asset> Assets { get; set; }
 
+        public DbSet<Users> Users { get; set; }
+
+        public DbSet<Accounts> Accounts { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // IEntityTypeConfiguration<T>を実装した設定を自動的に適用する

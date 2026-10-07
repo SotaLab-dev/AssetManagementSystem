@@ -19,6 +19,8 @@ type AccountFormProps = {
     title: string;
     accounts?: AccountInfo;
     onSubmitButtonName: string;
+    userId?: string,
+    setUserId?: (userId: string) => void,
     accountName: string;
     setAccountName: (name: string) => void;
     password: string;
@@ -52,6 +54,8 @@ const AccountForm = ({
     mode,
     title,
     onSubmitButtonName,
+    userId,
+    setUserId,
     accountName,
     setAccountName,
     password,
@@ -99,7 +103,13 @@ const AccountForm = ({
                     >
                         {title}
                     </Typography>
-
+                    <AppTextField
+                        label="ユーザーID"
+                        value={userId}
+                        onChange={(event) =>
+                            setUserId?.(event.target.value)
+                        }
+                    />
                     <AppTextField
                         label="アカウント名"
                         value={accountName}

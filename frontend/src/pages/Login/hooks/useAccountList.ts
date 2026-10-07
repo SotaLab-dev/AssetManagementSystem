@@ -9,6 +9,7 @@ export const useAccountList = () => {
     const navigate = useNavigate();
     const [accounts, setAccounts] = useState<AccountInfo[]>(mockAccountList);
     const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
+    const [userId, setUserId] = useState<string>("");
     const [accountName, setAccountName] = useState("");
     const [password, setPassword] = useState("");
     const [passwordReinput, setPasswordReinput] = useState("");
@@ -22,17 +23,35 @@ export const useAccountList = () => {
     // const [rememberMe, setRememberMe] = useState(false);
 
     const handleLogin = async () => {
-        const request = {
-            UserName: accountName,
-            Password: password
-        }
-        const res = await api.post("/auth/login", request);
-        if (res.status !== 200) {
-            // TODO エラーメッセージの表示方法は要検討
-            return;
-        }
+        try {
+            if(!userId.trim() || userId.length > 20){
+                return;
+            }
 
-        navigate(Routes.dashboard);
+            if(!accountName.trim() || accountName.length > 20){
+                return;
+            }
+
+            if(!password.trim() || password.length < 8 || password.length > 64){
+                return;
+            }
+
+            const request = {
+                UserId: userId,
+                AccountName: accountName,
+                Password: password
+            }
+            const res = await api.post("/auth/login", request);
+            if (res.status !== 200) {
+                // TODO エラーメッセージの表示方法は要検討
+                return;
+            }
+
+            navigate(Routes.dashboard);
+        }
+        catch (error) {
+            console.log("API Error");
+        }
     };
 
     const handleAccountDelete = (accountName: string): void => {
@@ -64,6 +83,8 @@ export const useAccountList = () => {
     };
 
     return {
+        userId,
+        setUserId,
         accountName,
         setAccountName,
         password,
