@@ -22,7 +22,7 @@ namespace AssetManagementSystem.Api.Controllers
 
 
         public AuthController(
-            IConfiguration configuration, 
+            IConfiguration configuration,
             AppDbContext authDbContext,
             IPasswordService passwordService)
         {
@@ -35,7 +35,15 @@ namespace AssetManagementSystem.Api.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginModel model)
         {
-            if (model.UserId == null ||  model.AccountName == null || model.Password == null)
+            if (string.IsNullOrWhiteSpace(model.UserId) ||
+                string.IsNullOrWhiteSpace(model.AccountName) ||
+                string.IsNullOrWhiteSpace(model.Password))
+            {
+                return BadRequest();
+            }
+
+            if (model.UserId.Length > 20 ||
+                model.AccountName.Length > 20)
             {
                 return BadRequest();
             }
