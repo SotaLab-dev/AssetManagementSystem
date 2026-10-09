@@ -1,3 +1,5 @@
+using AssetManagementSystem.Api.Services;
+using AssetManagementSystem.Api.Interfaces;
 using AssetManagementSystem.Api.Data;
 using AssetManagementSystem.Api.Middleware;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -60,6 +62,7 @@ namespace AssetManagementSystem.Api
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<IPasswordService, BCryptPasswordService>();
 
             var app = builder.Build();
 
@@ -71,6 +74,7 @@ namespace AssetManagementSystem.Api
 
             app.UseRouting();
             app.UseMiddleware<CsrfValidationMiddleware>();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
