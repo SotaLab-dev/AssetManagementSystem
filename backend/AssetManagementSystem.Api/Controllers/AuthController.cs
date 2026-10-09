@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using AssetManagementSystem.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using AssetManagementSystem.Api.Interfaces;
+using System.Runtime.CompilerServices;
 
 namespace AssetManagementSystem.Api.Controllers
 {
@@ -50,7 +51,12 @@ namespace AssetManagementSystem.Api.Controllers
 
             var account = _authContext.Accounts.FirstOrDefault(a => a.UserId == model.UserId && a.AccountName == model.AccountName);
 
-            if(account == null)
+            if (account?.AccountName == null)
+            {
+                return Unauthorized();
+            }
+            
+            if(account?.Password == null)
             {
                 return Unauthorized();
             }
@@ -88,6 +94,7 @@ namespace AssetManagementSystem.Api.Controllers
             });
 
             return Ok();
+
         }
 
         [AllowAnonymous]
@@ -119,7 +126,7 @@ namespace AssetManagementSystem.Api.Controllers
                 return BadRequest();
             }
 
-            if(model.AccountName.Length > 20)
+            if (model.AccountName.Length > 20)
             {
                 return BadRequest();
             }
