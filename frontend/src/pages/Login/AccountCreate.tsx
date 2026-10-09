@@ -1,9 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import RoutePath from "../../constants/Routes";
-import { AccountMode } from "../../types/AccountMode";
 import AccountForm from "./components/AccountForm";
-import { useAccountList } from "./hooks/useAccountList";
 import api from "../../services/api/axios";
+import useAccountForm from "./hooks/useAccountForm";
+import usePasswordVisibility from "./hooks/usePasswordVisibility";
 
 const AccountCreate = () => {
     const {
@@ -15,11 +15,14 @@ const AccountCreate = () => {
         setPassword,
         passwordReinput,
         setPasswordReinput,
+    } = useAccountForm();
+
+    const {
         showPassword,
         showPasswordReinput,
         togglePasswordVisibility,
         togglePasswordReinputVisibility
-    } = useAccountList();
+    } = usePasswordVisibility();
 
     const navigate = useNavigate();
 
@@ -66,23 +69,25 @@ const AccountCreate = () => {
 
     return (
         <AccountForm
-            mode={AccountMode.CREATE}
+            mode="CREATE"
             title="アカウント登録"
             onSubmitButtonName="登録"
-            userId={userId}
-            setUserId={setUserId}
-            accountName={accountName}
-            setAccountName={setAccountName}
-            password={password}
-            setPassword={setPassword}
-            passwordReinput={passwordReinput}
-            setPasswordReinput={setPasswordReinput}
-            showPassword={showPassword}
-            showPasswordReinput={showPasswordReinput}
-            onTogglePassword={togglePasswordVisibility}
-            onTogglePasswordReinput={togglePasswordReinputVisibility}
-            onCancel={handleCancel}
-            onSubmit={handleAccountCreate}
+            accountCreate = {{
+                userId,
+                setUserId,
+                accountName,
+                setAccountName,
+                password,
+                setPassword,
+                passwordReinput,
+                setPasswordReinput,
+                showPassword,
+                showPasswordReinput,
+                onTogglePassword: togglePasswordVisibility,
+                onTogglePasswordReinput: togglePasswordReinputVisibility,
+                onCancel: handleCancel,
+                onCreate: handleAccountCreate
+            }}
         />
     );
 };

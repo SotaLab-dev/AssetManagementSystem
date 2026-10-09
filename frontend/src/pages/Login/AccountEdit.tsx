@@ -1,21 +1,32 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { AccountMode } from "../../types/AccountMode";
+import { useNavigate } from "react-router-dom";
 import AccountForm from "./components/AccountForm";
 import RoutePath from "../../constants/Routes";
-import { useAccountList } from "./hooks/useAccountList";
+import useAccountForm from "./hooks/useAccountForm";
+import usePasswordVisibility from "./hooks/usePasswordVisibility";
 
 const AccountEdit = () => {
+    const {
+        userId,
+        accountName,
+        setAccountName,
+        currentPassword,
+        setCurrentPassword,
+        newPassword,
+        setNewPassword,
+        newPasswordReinput,
+        setNewPasswordReinput,
+    } = useAccountForm();
 
     const {
-        accounts
-    }= useAccountList();
+        showCurrentPassword,
+        showNewPassword,
+        showNewPasswordReinput,
+        toggleCurrentPasswordVisibility,
+        toggleNewPasswordVisibility,
+        toggleNewPasswordReinputVisibility
+    } = usePasswordVisibility();
 
-    const { name } = useParams(); 
     const navigate = useNavigate();
-
-    const account = accounts.find(
-        (item) => item.name === name
-    );
 
     const handleCancel = () => {
         navigate(RoutePath.accountManage)
@@ -24,15 +35,31 @@ const AccountEdit = () => {
     const handleLoginInfoUpdate = () => {
         navigate(RoutePath.accountManage);
     }
-    
+
     return (
         <AccountForm
-            mode={AccountMode.EDIT}
+            mode="EDIT"
             title="アカウント編集"
-            accounts={account}
             onSubmitButtonName="更新"
-            onCancel={handleCancel}
-            onSubmit={handleLoginInfoUpdate}
+            accountEdit={{
+                userId,
+                accountName,
+                setAccountName,
+                currentPassword,
+                setCurrentPassword,
+                newPassword,
+                setNewPassword,
+                newPasswordReinput,
+                setNewPasswordReinput,
+                showCurrentPassword,
+                showNewPassword,
+                showNewPasswordReinput,
+                onToggleCurrentPassword: toggleCurrentPasswordVisibility,
+                onToggleNewPassword: toggleNewPasswordVisibility,
+                onToggleNewPasswordReinput: toggleNewPasswordReinputVisibility,
+                onCancel: handleCancel,
+                onUpdate: handleLoginInfoUpdate
+            }}
         />
     )
 };

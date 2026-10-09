@@ -1,32 +1,43 @@
-import { AccountMode } from "../../types/AccountMode";
 import AccountForm from "./components/AccountForm";
-import { useAccountList } from "./hooks/useAccountList";
+import useAccountForm from "./hooks/useAccountForm";
+import useAuth from "./hooks/useAuth";
+import usePasswordVisibility from "./hooks/usePasswordVisibility";
 
 const Login = () => {
     const {
+        userId,
+        setUserId,
         accountName,
         setAccountName,
         password,
         setPassword,
+    } = useAccountForm();
+
+    const {
         showPassword,
-        handleLogin,
         togglePasswordVisibility,
-    } = useAccountList();
+    } = usePasswordVisibility();
+
+    const {
+        handleLogin,
+    } = useAuth();
 
     return (
         <AccountForm
-            mode={AccountMode.LOGIN}
+            mode="LOGIN"
             title="ログイン"
             onSubmitButtonName="ログイン"
-            onSubmit={handleLogin}
-            onTogglePassword={togglePasswordVisibility}
-            accountName={accountName}
-            setAccountName={setAccountName}
-            password={password}
-            setPassword={setPassword}
-            showPassword={showPassword}
-            // rememberMe={false}
-            // setRememberMe={() => {}}
+            login={{
+                userId,
+                setUserId,
+                accountName,
+                setAccountName,
+                password,
+                setPassword,
+                showPassword,
+                onTogglePassword: togglePasswordVisibility,
+                onLogin: () => handleLogin(userId, accountName, password),
+            }}
         />
     );
 };
