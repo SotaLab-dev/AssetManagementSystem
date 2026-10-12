@@ -59,7 +59,7 @@ const AccountCreate = () => {
                 // TODO エラーメッセージの表示方法は要検討
                 return;
             }
-            navigate(RoutePath.login);
+            navigate(RoutePath.accountManage);
         }
         catch (error) {
             console.log("API Error");
