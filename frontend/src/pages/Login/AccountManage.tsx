@@ -1,16 +1,19 @@
 import { Delete } from "@mui/icons-material";
 import { Box, Checkbox, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import RoutePath from "../../constants/Routes";
 import { useAccountList } from "./hooks/useAccountList";
 import AppButton from "../../components/ui/AppButton";
 import { useConfirmDialog } from "../../components/common/ConfirmDialog/ConfirmDialog";
-import type { AccountInfo } from "../../types/User";
+import { useEffect } from "react";
+import type { GetAccountInfo } from "../../types/AccountForm";
 
 export const AccountManage = () => {
     const {
-        accounts,
+        accountList,
+        setAccountList,
         selectedAccount,
+        getAccounts,
         handleAccountDelete,
         handleSelectAccount,
     } = useAccountList();
@@ -18,15 +21,29 @@ export const AccountManage = () => {
     const { showConfirm } = useConfirmDialog();
 
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const onClickDelete = (target: AccountInfo) => {
-
-        showConfirm({
-            title: "削除確認",
-            message: `${target.name}を削除しますがよろしいですか？`,
-            onOk: () => handleAccountDelete(target.name)
-        });
+    const onClickDelete = async (target: GetAccountInfo) => {
+        try {
+            showConfirm({
+                title: "削除確認",
+                message: `${target.accountName}を削除しますがよろしいですか？`,
+                onOk: async () => await handleAccountDelete(target.accountId)
+            });
+        }
+        catch (error) {
+            return;
+        }
     };
+
+    useEffect(() => {
+        const fetchAccounts = async () => {
+            const data = await getAccounts();
+            setAccountList(data);
+        };
+
+        fetchAccounts();
+    }, [location.pathname])
 
     return (
         <Box
@@ -52,10 +69,10 @@ export const AccountManage = () => {
                                 />
                             </TableCell>
                             <TableCell>
-                                アカウント名
+                                ユーザーID
                             </TableCell>
                             <TableCell>
-                                メールアドレス
+                                アカウント名
                             </TableCell>
                             <TableCell>
                                 操作
@@ -63,43 +80,51 @@ export const AccountManage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {accounts.length === 0 ? (
+                        {accountList === undefined ? (
                             <TableRow>
-                                <TableCell>
-                                    アカウントがありません。
+                                <TableCell colSpan={4} align="center">
+                                    読み込み中...
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            accounts.map((account) =>
-                                <TableRow
-                                    hover
-                                    key={account.name}
-                                >
-                                    <TableCell padding="checkbox">
-                                        <Checkbox
-                                            checked={selectedAccount?.includes(account.name)}
-                                            onChange={() => handleSelectAccount(account.name)}
-                                        />
-                                    </TableCell>
-                                    <TableCell>
-                                        {account.name}
-                                    </TableCell>
-                                    <TableCell>
-                                        {account.mailAddress}
-                                    </TableCell>
-                                    <TableCell>
-                                        <IconButton
-                                            color="error"
-                                            aria-label="削除"
-                                            onClick={() => onClickDelete(account)// ダイアログ表示
-                                            }
-                                        >
-                                            <Delete />
-                                        </IconButton>
+                            accountList?.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={4} align="center">
+                                        アカウントがありません。
                                     </TableCell>
                                 </TableRow>
-                            )
-                        )}
+                            ) : (
+                                accountList?.map((account) =>
+                                    <TableRow
+                                        hover
+                                        key={account.accountId}
+                                    >
+                                        <TableCell padding="checkbox">
+                                            <Checkbox
+                                                checked={selectedAccount === account.accountId}
+                                                onChange={() => handleSelectAccount(account.accountId)}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            {account.userId}
+                                        </TableCell>
+                                        <TableCell>
+                                            {account.accountName}
+                                        </TableCell>
+                                        <TableCell>
+                                            <IconButton
+                                                color="error"
+                                                aria-label="削除"
+                                                onClick={() => onClickDelete(account)// ダイアログ表示
+                                                }
+                                            >
+                                                <Delete />
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            ))
+                        }
                     </TableBody>
                 </Table>
             </TableContainer>
@@ -110,30 +135,39 @@ export const AccountManage = () => {
                     gap: 2,
                     mt: 2,
                 }}>
-            <AppButton
-                onClick={() => {
-                    if(!selectedAccount) return;
-                    
-                    const target = accounts.find(account => account.name === selectedAccount);
+                <AppButton
+                    onClick={() => {
+                        if (!selectedAccount) return;
 
-                    if(!target) return;
+                        const target = accountList?.find(account => account.accountId === selectedAccount);
 
-                    onClickDelete(target)
-                }}
-            >
-                アカウント削除
-            </AppButton>
-            <AppButton
-                onClick={() => navigate(RoutePath.accountEdit)}>
-                アカウント編集
-            </AppButton>
-            <AppButton
-                onClick={() => navigate(RoutePath.accountSetting)}
-            >
-                アカウント登録
-            </AppButton>
+                        if (!target) return;
+
+                        onClickDelete(target)
+                    }}
+                >
+                    アカウント削除
+                </AppButton>
+                <AppButton
+                    onClick={() => {
+                        if (!selectedAccount) return;
+
+                        const target = accountList?.find(account => account.accountId === selectedAccount);
+
+                        if (!target) return;
+
+                        navigate(`/account/edit/${selectedAccount}`);
+                    }}
+                >
+                    アカウント編集
+                </AppButton>
+                <AppButton
+                    onClick={() => navigate(RoutePath.accountSetting)}
+                >
+                    アカウント登録
+                </AppButton>
             </Box>
-        </Box>
+        </Box >
 
     )
 }

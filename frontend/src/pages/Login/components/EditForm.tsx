@@ -4,7 +4,6 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import AppButton from "../../../components/ui/AppButton";
 import type { AccountEditProps } from "../../../types/AccountForm";
 
-
 const EditForm = ({
     userId,
     accountName,
@@ -136,7 +135,7 @@ const EditForm = ({
                     </AppButton>
                     <AppButton
                         fullWidth
-                        onClick={onUpdate}
+                        onClick={() => onUpdate()}
                     >
                         {onSubmitButtonName}
                     </AppButton>

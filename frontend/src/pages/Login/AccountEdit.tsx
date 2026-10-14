@@ -1,10 +1,75 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AccountForm from "./components/AccountForm";
 import RoutePath from "../../constants/Routes";
 import useAccountForm from "./hooks/useAccountForm";
 import usePasswordVisibility from "./hooks/usePasswordVisibility";
+import { useEffect, useState } from "react";
+import api from "../../services/api/axios";
 
+type InitialValue = {
+    userId: string,
+    accountName: string
+}
 const AccountEdit = () => {
+    const { accountId } = useParams();
+    const [initialValue, setInitialValue] = useState<InitialValue | null>(null);
+
+    const navigate = useNavigate();
+
+    const handleCancel = () => {
+        navigate(RoutePath.accountManage)
+    }
+
+    const handleLoginInfoUpdate = async (accountId: string) => {
+        try {
+            if(!accountName.trim()){
+                return;
+            }
+
+            if (!currentPassword.trim() || currentPassword.length < 8 || currentPassword.length > 64) {
+                return;
+            }
+
+            if (!newPassword.trim() || newPassword.length < 8 || newPassword.length > 64) {
+                return;
+            }
+
+            if (!newPasswordReinput.trim() || newPasswordReinput.length < 8 || newPasswordReinput.length > 64) {
+                return;
+            }
+
+            const isPasswordCheck = newPassword === newPasswordReinput;
+
+            if (!isPasswordCheck) return;
+
+            const request = {
+                AccountName: accountName,
+                currentPassword: currentPassword,
+                newPassword: newPassword
+            }
+            const res = await api.put(`/auth/edit/${accountId}`, request)
+
+            if (res.status === 200) {
+                navigate(RoutePath.accountManage);
+            }
+        }
+        catch (error) {
+            return;
+        }
+    }
+
+    useEffect(() => {
+        if (!accountId) return;
+        const fetch = async () => {
+            const res = await api.get(`/auth/account/${accountId}`);
+            setInitialValue({
+                userId: res.data.userId,
+                accountName: res.data.accountName
+            });
+        }
+        fetch();
+    }, [accountId]);
+
     const {
         userId,
         accountName,
@@ -15,7 +80,7 @@ const AccountEdit = () => {
         setNewPassword,
         newPasswordReinput,
         setNewPasswordReinput,
-    } = useAccountForm();
+    } = useAccountForm(initialValue ?? undefined);
 
     const {
         showCurrentPassword,
@@ -26,14 +91,9 @@ const AccountEdit = () => {
         toggleNewPasswordReinputVisibility
     } = usePasswordVisibility();
 
-    const navigate = useNavigate();
 
-    const handleCancel = () => {
-        navigate(RoutePath.accountManage)
-    }
-
-    const handleLoginInfoUpdate = () => {
-        navigate(RoutePath.accountManage);
+    if (!initialValue) {
+        return <div>Loading...</div>
     }
 
     return (
@@ -58,7 +118,10 @@ const AccountEdit = () => {
                 onToggleNewPassword: toggleNewPasswordVisibility,
                 onToggleNewPasswordReinput: toggleNewPasswordReinputVisibility,
                 onCancel: handleCancel,
-                onUpdate: handleLoginInfoUpdate
+                onUpdate: async () => {
+                    if(!accountId) return;
+                    await handleLoginInfoUpdate(accountId)
+                }
             }}
         />
     )

@@ -1,12 +1,12 @@
-﻿using AssetManagementSystem.Api.Models;
-using AssetManagementSystem.Api.Services;
+﻿using AssetManagementSystem.Api.Data;
+using AssetManagementSystem.Api.DTO;
 using AssetManagementSystem.Api.Entities;
+using AssetManagementSystem.Api.Interfaces;
+using AssetManagementSystem.Api.Models;
+using AssetManagementSystem.Api.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using AssetManagementSystem.Api.Data;
 using Microsoft.EntityFrameworkCore;
-using AssetManagementSystem.Api.Interfaces;
-using System.Runtime.CompilerServices;
 
 namespace AssetManagementSystem.Api.Controllers
 {
@@ -34,7 +34,7 @@ namespace AssetManagementSystem.Api.Controllers
 
         [AllowAnonymous]
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (string.IsNullOrWhiteSpace(model.UserId) ||
                 string.IsNullOrWhiteSpace(model.AccountName) ||
@@ -49,14 +49,14 @@ namespace AssetManagementSystem.Api.Controllers
                 return BadRequest();
             }
 
-            var account = _authContext.Accounts.FirstOrDefault(a => a.UserId == model.UserId && a.AccountName == model.AccountName);
+            var account = await _authContext.Accounts.FirstOrDefaultAsync(a => a.UserId == model.UserId && a.AccountName == model.AccountName);
 
             if (account?.AccountName == null)
             {
                 return Unauthorized();
             }
-            
-            if(account?.Password == null)
+
+            if (account?.Password == null)
             {
                 return Unauthorized();
             }
@@ -136,6 +136,11 @@ namespace AssetManagementSystem.Api.Controllers
                 return BadRequest();
             }
 
+            if (model.Password.Length < 8 || model.Password.Length > 64)
+            {
+                return BadRequest();
+            }
+
             bool isUserExists = await _authContext.Users.AnyAsync(u => u.UserId == model.UserId);
 
             if (!isUserExists)
@@ -170,6 +175,129 @@ namespace AssetManagementSystem.Api.Controllers
             await _authContext.SaveChangesAsync();
 
             return StatusCode(StatusCodes.Status201Created);
+        }
+
+        [Authorize]
+        [HttpGet("account/{accountId}")]
+        public async Task<IActionResult> GetUserId(Guid accountId)
+        {
+            var accountInfo = await _authContext.Accounts
+                                     .Where(a => a.AccountId == accountId)
+                                     .Select(a => new AccountInfoDTO
+                                     {
+                                         UserId = a.UserId,
+                                         AccountName = a.AccountName
+                                     })
+                                     .FirstOrDefaultAsync();
+
+            if(accountInfo == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(accountInfo);
+        }
+
+        [Authorize]
+        [HttpGet("accounts")]
+        public async Task<IActionResult> GetAccountsAsync()
+        {
+            var accounts = await _authContext.Accounts
+                                       .Select(a => new AccountDTO
+                                       {
+                                           AccountId = a.AccountId,
+                                           UserId = a.UserId,
+                                           AccountName = a.AccountName
+                                       })
+                                       .ToListAsync();
+
+            return Ok(accounts);
+        }
+
+
+        [Authorize]
+        [HttpPut("edit/{accountId}")]
+        public async Task<IActionResult> Edit(Guid accountId, [FromBody] AccountEditModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.AccountName))
+            {
+                return BadRequest();
+            }
+
+            if (model.AccountName.Length > 20)
+            {
+                return BadRequest();
+            }
+
+            if (string.IsNullOrWhiteSpace(model.CurrentPassword))
+            {
+                return BadRequest();
+            }
+
+            if (string.IsNullOrWhiteSpace(model.NewPassword))
+            {
+                return BadRequest();
+            }
+
+            if (model.NewPassword.Length < 8 || model.NewPassword.Length > 64)
+            {
+                return BadRequest();
+            }
+
+            var account = await _authContext.Accounts.FirstOrDefaultAsync(a => a.AccountId == accountId);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            if(account.AccountName != model.AccountName)
+            {
+                var isExistAccountName = await _authContext.Accounts.AnyAsync(a =>
+                                            a.UserId == model.UserId &&
+                                            a.AccountName == model.AccountName &&
+                                            a.AccountId != accountId
+                                            );
+                if (isExistAccountName)
+                {
+                    return BadRequest();
+                }
+
+            }
+
+            bool passwordVerify = _passwordService.VerifyPassword(model.CurrentPassword, account.Password);
+
+            if (!passwordVerify)
+            {
+                return BadRequest();
+            }
+
+            string passwordHash = _passwordService.HashPassword(model.NewPassword);
+
+            account.AccountName = model.AccountName;
+            account.Password = passwordHash;
+            account.UpdatedAt = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss"); ;
+
+            await _authContext.SaveChangesAsync();
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpDelete("delete/{accountId}")]
+        public async Task<IActionResult> Delete(Guid accountId)
+        {
+            var account = await _authContext.Accounts
+                                              .FirstOrDefaultAsync(a => a.AccountId == accountId);
+
+            if (account == null)
+            {
+                return NotFound();
+            }
+
+            _authContext.Accounts.Remove(account);
+            await _authContext.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }

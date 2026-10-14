@@ -1,28 +1,49 @@
 import { useState } from "react";
-import type { AccountInfo } from "../../../types/User";
-import { mockAccountList } from "../../../mocks/accounts";
+import api from "../../../services/api/axios";
+import type { GetAccountInfo } from "../../../types/AccountForm";
 
 export const useAccountList = () => {
-    const [accounts, setAccounts] = useState<AccountInfo[]>(mockAccountList);
-    const [selectedAccount, setSelectedAccount] = useState<string | null>(null);
+    const [accountList, setAccountList] = useState<GetAccountInfo[]>();
+    const [selectedAccount, setSelectedAccount] = useState<string>("");
 
-    const handleAccountDelete = (accountName: string): void => {
-        setAccounts(prev =>
-            prev.filter(account => account.name !== accountName)
-        );
-    };
+    const getAccounts = async (): Promise<GetAccountInfo[]> => {
+        const res = await api.get("/auth/accounts");
 
-    const handleSelectAccount = (accountName: string) => {
+        return res.data
+    }
+
+    const handleSelectAccount = (accountId: string) => {
         setSelectedAccount((prev) =>
-            prev === accountName ? null : accountName
+            prev === accountId ? "" : accountId
         );
     };
 
+    const handleAccountDelete =  async(accountId: string) => {
+        try {
+            if (!accountId) {
+                return;
+            }
+            const res = await api.delete(`/auth/delete/${accountId}`)
+
+            if (res.status === 204) {
+                setAccountList((prev) =>
+                    prev?.filter(account => account.accountId !== accountId)
+                );
+                setSelectedAccount((prev) =>
+                    prev === accountId ? "" : prev
+                );
+            }
+        }
+        catch {
+            return;
+        }
+    }
 
     return {
-        accounts,
-        setAccounts,
+        accountList,
+        setAccountList,
         selectedAccount,
+        getAccounts,
         handleAccountDelete,
         handleSelectAccount,
     }

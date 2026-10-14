@@ -32,6 +32,7 @@ export type AccountCreateProps = {
 
 export type AccountEditProps = {
     userId: string,
+    setUserId?: Dispatch<SetStateAction<string>>,
     accountName: string,
     setAccountName:  Dispatch<SetStateAction<string>>,
     currentPassword: string,
@@ -47,7 +48,11 @@ export type AccountEditProps = {
     onToggleNewPassword: () => void;
     onToggleNewPasswordReinput: () => void;
     onCancel: () => void;
-    onUpdate: () => void;
+    onUpdate: () => void | Promise<void>;
 }
 
-
+export type GetAccountInfo = {
+    accountId:string,
+    userId: string,
+    accountName: string,
+}

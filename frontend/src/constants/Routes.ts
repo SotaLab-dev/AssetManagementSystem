@@ -5,7 +5,7 @@ const Routes = {
 
     accountSetting: "/account/setting",
 
-    accountEdit: "/account/edit/:name",
+    accountEdit: "/account/edit/:accountId",
 
     dashboard: "/",
 
