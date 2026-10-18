@@ -111,6 +111,43 @@ namespace AssetManagementSystem.Api.Migrations
                     b.ToTable("Assets", (string)null);
                 });
 
+            modelBuilder.Entity("AssetManagementSystem.Api.Entities.PermissionManager", b =>
+                {
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int")
+                        .HasColumnName("権限ID");
+
+                    b.Property<Guid>("AccountId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("アカウントID");
+
+                    b.HasKey("PermissionId", "AccountId");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("PermissionManager", (string)null);
+                });
+
+            modelBuilder.Entity("AssetManagementSystem.Api.Entities.Permissions", b =>
+                {
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("int")
+                        .HasColumnName("権限ID");
+
+                    b.Property<string>("PermissionName")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)")
+                        .HasColumnName("権限名");
+
+                    b.HasKey("PermissionId");
+
+                    b.HasIndex("PermissionName")
+                        .IsUnique();
+
+                    b.ToTable("Permissions", (string)null);
+                });
+
             modelBuilder.Entity("AssetManagementSystem.Api.Entities.Users", b =>
                 {
                     b.Property<string>("UserId")
@@ -157,6 +194,35 @@ namespace AssetManagementSystem.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("AssetManagementSystem.Api.Entities.PermissionManager", b =>
+                {
+                    b.HasOne("AssetManagementSystem.Api.Entities.Accounts", "Accounts")
+                        .WithMany("PermissionManager")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AssetManagementSystem.Api.Entities.Permissions", "Permissions")
+                        .WithMany("PermissionManager")
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Accounts");
+
+                    b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("AssetManagementSystem.Api.Entities.Accounts", b =>
+                {
+                    b.Navigation("PermissionManager");
+                });
+
+            modelBuilder.Entity("AssetManagementSystem.Api.Entities.Permissions", b =>
+                {
+                    b.Navigation("PermissionManager");
                 });
 
             modelBuilder.Entity("AssetManagementSystem.Api.Entities.Users", b =>

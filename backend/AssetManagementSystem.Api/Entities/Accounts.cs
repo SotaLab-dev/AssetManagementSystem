@@ -15,5 +15,7 @@
         public string? UpdatedAt { get; set; }
 
         public Users? User { get; set; }
+
+        public List<PermissionManager> PermissionManager { get; set; } = new();
     }
 }
