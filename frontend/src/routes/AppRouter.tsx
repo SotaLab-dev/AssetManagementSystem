@@ -19,6 +19,7 @@ import AssetLayout from "../components/AssetLayout/AssetLayout";
 import AccountCreate from "../pages/Login/AccountCreate";
 import AccountEdit from "../pages/Login/AccountEdit";
 import { AccountManage } from "../pages/Login/AccountManage";
+import { RequireAuth } from "./RequireAuth";
 
 const AppRouter = () => {
     return (
@@ -53,7 +54,11 @@ const AppRouter = () => {
 
                 <Route
                     path={RoutePath.dashboard}
-                    element={<Dashboard />}
+                    element={
+                        <RequireAuth>
+                            <Dashboard />
+                        </RequireAuth>
+                    }
                 />
 
                 <Route element={<AssetLayout />}>

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 namespace AssetManagementSystem.Api.Controllers
 {
     [ApiController]
-    [Route("api/auth")]
+    [Route("api/auth/")]
 
     public class AuthController : Controller
     {
@@ -21,15 +21,18 @@ namespace AssetManagementSystem.Api.Controllers
 
         private readonly IPasswordService _passwordService;
 
+        private readonly JwtService _jwtService;
 
         public AuthController(
             IConfiguration configuration,
             AppDbContext authDbContext,
-            IPasswordService passwordService)
+            IPasswordService passwordService,
+            JwtService jwtService)
         {
             _configuration = configuration;
             _authContext = authDbContext;
             _passwordService = passwordService;
+            _jwtService = jwtService;
         }
 
         [AllowAnonymous]
@@ -72,6 +75,7 @@ namespace AssetManagementSystem.Api.Controllers
                 _configuration["Jwt:Key"],
                 _configuration["Jwt:Issuer"],
                 _configuration["Jwt:Audience"],
+                model.UserId,
                 model.AccountName
                 );
 
@@ -298,6 +302,36 @@ namespace AssetManagementSystem.Api.Controllers
             await _authContext.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [AllowAnonymous]
+        [HttpGet("me")]
+        public async Task<IActionResult> Me()
+        {
+            var token = Request.Cookies["token"];
+
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                return BadRequest();
+            }
+
+            var userId = _jwtService.ValidateAndGetUserId(token);
+
+            var accountName = _jwtService.ValidateAndGetUserId(token);
+
+            var account = _authContext.Accounts
+                                      .FirstOrDefault(a => a.UserId == userId &&
+                                                           a.AccountName == accountName);
+
+            if (account == null)
+                return NotFound();
+
+            return Ok(new
+            {
+                accountId = account.AccountId,
+                accountName = account.AccountName,
+                userId = account.UserId
+            });
         }
     }
 }

@@ -7,7 +7,7 @@ namespace AssetManagementSystem.Api.Services
 {
     public static class TokenService
     {
-        public static string GenerateToken(string key, string issuer, string audience, string userName)
+        public static string GenerateToken(string key, string issuer, string audience, string userId, string accountName)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
 
@@ -15,7 +15,8 @@ namespace AssetManagementSystem.Api.Services
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, userName),
+                new Claim("userId", userId),
+                new Claim("accountName", accountName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
