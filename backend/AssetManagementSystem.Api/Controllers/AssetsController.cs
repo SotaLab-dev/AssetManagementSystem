@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AssetManagementSystem.Api.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class AssetsController : ControllerBase
@@ -66,6 +65,7 @@ namespace AssetManagementSystem.Api.Controllers
         }
 
         // POST /api/assets
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<AssetsResponse>> CreateAsset([FromBody] AssetsRequest request)
         {
@@ -155,6 +155,7 @@ namespace AssetManagementSystem.Api.Controllers
 
         }
 
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult<AssetsResponse>> UpdateAssetAsync(Guid id, [FromBody] AssetsRequest request)
         {
@@ -222,7 +223,8 @@ namespace AssetManagementSystem.Api.Controllers
             return Ok(response);
 
         }
-              
+
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAssetAsync(Guid id)
         {
@@ -242,7 +244,7 @@ namespace AssetManagementSystem.Api.Controllers
 
         }
 
-
+        [Authorize]
         [HttpDelete("bulk")]
         public async Task<ActionResult> DeleteAssetsAsync([FromBody] BulkDeleteRequest request)
         {
@@ -272,6 +274,7 @@ namespace AssetManagementSystem.Api.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpPatch("bulk")]
         public async Task<ActionResult> UpdateStatusAsync([FromBody] BulkUpdateStatusRequest request)
         {

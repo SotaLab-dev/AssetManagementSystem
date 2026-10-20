@@ -49,21 +49,39 @@ builder.Services.AddAuthentication(options =>
     {
         OnMessageReceived = context =>
         {
-            var token = context.Request.Cookies["token"];
-            if (!string.IsNullOrWhiteSpace(token))
+            // Authorization ヘッダーが無い場合のみ Cookie を使う
+            if (string.IsNullOrEmpty(context.Token))
             {
-                context.Token = token;
+                var token = context.Request.Cookies["token"];
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    context.Token = token;
+                }
             }
+
             return Task.CompletedTask;
         }
     };
 });
+
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IPasswordService, BCryptPasswordService>();
 builder.Services.AddScoped<PermissionSyncService>();
+// CORS を追加
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials(); // Cookie を許可
+    });
+});
+
 
 var app = builder.Build();
 
@@ -80,6 +98,10 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.UseRouting();
+
+// CORS を適用（UseRouting の直後）
+app.UseCors("AllowFrontend");
+
 app.UseMiddleware<CsrfValidationMiddleware>();
 
 app.UseAuthentication();

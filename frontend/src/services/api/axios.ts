@@ -2,7 +2,7 @@ import axios from "axios";
 import { getCsrfToken } from "../../utils/csrf";
 
 const api = axios.create({
-  baseURL: "/api", 
+  baseURL: "http://localhost:5093/api", 
   withCredentials: true, // Cookie を送信
 });
 
