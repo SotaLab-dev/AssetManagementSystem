@@ -44,8 +44,18 @@ const useAuth = () => {
             console.log("API Error");
         }
     };
+
+    const handleLogout = async () => {
+        const res = await api.post("/auth/logout");
+        if (res.status !== 200) {
+            // TODO エラーメッセージの表示方法は要検討
+            return;
+        }
+        navigate(Routes.login);
+    };
     return {
-        handleLogin
+        handleLogin,
+        handleLogout
     }
 }
 
