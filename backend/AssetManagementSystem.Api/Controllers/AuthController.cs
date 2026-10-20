@@ -181,7 +181,6 @@ namespace AssetManagementSystem.Api.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
 
-        [Authorize]
         [HttpGet("account/{accountId}")]
         public async Task<IActionResult> GetUserId(Guid accountId)
         {
@@ -202,7 +201,6 @@ namespace AssetManagementSystem.Api.Controllers
             return Ok(accountInfo);
         }
 
-        [Authorize]
         [HttpGet("accounts")]
         public async Task<IActionResult> GetAccountsAsync()
         {
